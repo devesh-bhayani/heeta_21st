@@ -1,9 +1,36 @@
 import styled from 'styled-components';
 
 const Section = styled.section`
-  min-height: 70vh;
-  background: #fff8fa;
-  padding: 4rem 0 2rem 0;
+  min-height: 90vh;
+  width: 100vw;
+  background: linear-gradient(135deg, #ffb6df 0%, #ff90c2 100%);
+  padding: 5rem 0 4rem 0;
+  margin-top: 4rem;
+  margin-bottom: 4rem;
+  border-bottom: 1.5px solid #ffd6eb;
+  box-shadow: 0 6px 24px -10px #ffd6eb80;
+  overflow: hidden;
+  position: relative;
+
+  /* Subtle camera and sparkle emojis */
+  &::before {
+    content: '📸 ✨';
+    position: absolute;
+    top: 16%;
+    left: 6%;
+    font-size: 4.5rem;
+    opacity: 0.10;
+    pointer-events: none;
+  }
+  &::after {
+    content: '🌸 🖼️';
+    position: absolute;
+    bottom: 13%;
+    right: 10%;
+    font-size: 4rem;
+    opacity: 0.13;
+    pointer-events: none;
+  }
 `;
 
 const Title = styled.h2`

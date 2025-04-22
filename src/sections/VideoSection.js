@@ -6,7 +6,7 @@ const Section = styled.section`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #fff8fa;
+  background: linear-gradient(135deg, #ffe1f0 0%, #ffb6df 100%);
   padding: 4rem 0 2rem 0;
 `;
 

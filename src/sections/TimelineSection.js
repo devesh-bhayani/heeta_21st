@@ -1,87 +1,275 @@
+// CASCADE TEST COMMENT: If you see this after a browser refresh, you are editing the correct file!
+
 import styled from 'styled-components';
+import React, { useEffect, useState, useRef } from "react";
+import { db } from "../utils/firebase";
+import {
+  collection,
+  getDocs,
+  addDoc,
+  onSnapshot,
+  query,
+  orderBy
+} from "firebase/firestore";
+import { createGlobalStyle } from 'styled-components';
 
 const Section = styled.section`
-  min-height: 70vh;
-  background: #fff8fa;
-  padding: 4rem 0 2rem 0;
+  min-height: 75vh;
+  width: 100vw;
+  background: linear-gradient(120deg, #ffe1fa 0%, #ffb6df 60%, #ff8ac6 100%);
+  padding: 5rem 0 4rem 0;
+  margin-top: 4rem;
+  margin-bottom: 4rem;
+  border-bottom: 1.5px solid #ffd6eb;
+  box-shadow: 0 6px 24px -10px #ffd6eb80;
+  overflow: hidden;
+  position: relative;
+  z-index: 2;
+
+  /* Scattered soft icons as background */
+  .timeline-bg-emoji {
+    position: absolute;
+    font-size: 3.5rem;
+    opacity: 0.08;
+    pointer-events: none;
+    user-select: none;
+  }
 `;
 
 const Title = styled.h2`
   text-align: center;
   margin-bottom: 2rem;
+  color: ${({ theme }) => theme.colors.primary};
 `;
 
-const Timeline = styled.div`
+const TimelineWrapper = styled.div`
+  width: 100vw;
+  min-height: 520px;
+  padding: 3.5rem 0 4.5rem 0;
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
   overflow-x: auto;
-  gap: 2rem;
-  padding: 1rem 2rem;
+  overflow-y: visible;
+  background: transparent;
   scroll-snap-type: x mandatory;
+  z-index: 2;
 `;
 
-const Event = styled.div`
-  min-width: 260px;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(255, 105, 180, 0.1);
-  padding: 1.2rem;
+const TimelineLine = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 6px;
+  width: 100%;
+  background: repeating-linear-gradient(
+    to right,
+    #ffb6df 0 18px,
+    #fff8fa 18px 36px
+  );
+  border-radius: 3px;
+  z-index: 2;
+`;
+
+const TimelineEvent = styled.div`
+  position: relative;
+  min-width: 180px;
+  max-width: 220px;
+  margin: 0 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   scroll-snap-align: center;
-  transition: transform 0.2s;
+  z-index: 2;
+  top: ${({align}) => align === 'top' ? '-80px' : '80px'};
+  transition: top 0.3s;
+`;
+
+const ResponsiveTimelineEvents = styled.div`
+  position: relative;
+  width: 100%;
+  min-height: 1800px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const YearRose = styled.div`
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #fff8fa 60%, #ffe1e9 100%);
+  border: 1.5px solid #ff69b4;
+  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+  box-shadow: 0 1px 4px rgba(255, 105, 180, 0.13);
+  margin-bottom: 0.7rem;
+  margin-top: 0.2rem;
+  position: relative;
+  z-index: 2;
+  font-family: 'Dancing Script', cursive;
+  font-size: 0.95rem;
+  color: #ff69b4;
+  font-weight: bold;
+  transition: box-shadow 0.2s, transform 0.2s;
   &:hover {
-    transform: scale(1.04);
-    box-shadow: 0 6px 24px rgba(255, 105, 180, 0.18);
+    box-shadow: 0 4px 12px rgba(255, 105, 180, 0.13);
+    transform: scale(1.04) rotate(-1deg);
+    background: #ffe1f0;
   }
 `;
 
-const EventImage = styled.img`
-  width: 100%;
-  border-radius: 12px;
-  margin-bottom: 0.8rem;
+const RoseImg = styled.img`
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  width: 16px;
+  height: 16px;
+  filter: drop-shadow(0 1px 1px #ffb6df);
+  z-index: 3;
+  pointer-events: none;
 `;
 
-const EventDate = styled.div`
-  font-family: ${({ theme }) => theme.fonts.heading};
-  color: ${({ theme }) => theme.colors.primary};
-  margin-bottom: 0.4rem;
+const PhotoPlaceholder = styled.div`
+  width: 120px;
+  height: 120px;
+  background: #ffe1f0;
+  border: 2.5px dashed #ff69b4;
+  border-radius: 18px;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ff69b4;
+  font-size: 1.1rem;
+  font-family: 'Dancing Script', cursive;
 `;
 
-const EventCaption = styled.div`
-  font-size: 1rem;
-  color: #6e6e6e;
+const DEFAULT_YEARS = Array.from({length: 2025-2004+1}, (_,i) => 2004+i);
+
+const GlobalStyle = createGlobalStyle`
+  @keyframes sparkle-spin {
+    0% { transform: rotate(0deg) scale(1); }
+    100% { transform: rotate(360deg) scale(1.1); }
+  }
+  @keyframes pulse-glow {
+    0% { filter: drop-shadow(0 0 0px #ff0040cc) drop-shadow(0 0 16px #ff0040cc) drop-shadow(0 0 8px #ff0040cc); }
+    50% { filter: drop-shadow(0 0 12px #ff0040ff) drop-shadow(0 0 32px #ff0040ff) drop-shadow(0 0 22px #ff0040ff); }
+    100% { filter: drop-shadow(0 0 0px #ff0040cc) drop-shadow(0 0 16px #ff0040cc) drop-shadow(0 0 8px #ff0040cc); }
+  }
 `;
 
-// TODO: Replace these with your own timeline events
-const events = [
-  {
-    date: 'Jan 2022',
-    image: '/images/sample1.jpg',
-    caption: 'First date!'
-  },
-  {
-    date: 'Mar 2022',
-    image: '/images/sample2.jpg',
-    caption: 'Trip to the mountains'
-  },
-  {
-    date: 'Jul 2022',
-    image: '/images/sample3.jpg',
-    caption: 'Anniversary dinner'
-  },
-];
+const TimelineSection = () => {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const wrapperRef = useRef(null);
+  const fadeDuration = 2000;
 
-const TimelineSection = () => (
-  <Section id="timeline">
-    <Title>Our Journey</Title>
-    <Timeline>
-      {events.map((event, idx) => (
-        <Event key={idx}>
-          <EventImage src={event.image} alt={event.caption} />
-          <EventDate>{event.date}</EventDate>
-          <EventCaption>{event.caption}</EventCaption>
-        </Event>
-      ))}
-    </Timeline>
-  </Section>
-);
+  useEffect(() => {
+    const q = query(collection(db, "timelineEvents"), orderBy("year"));
+    const unsub = onSnapshot(
+      q,
+      (snapshot) => {
+        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setEvents(data);
+        setLoading(false);
+      },
+      (err) => {
+        setError("Failed to load timeline events");
+        setLoading(false);
+      }
+    );
+    return () => unsub();
+  }, []);
+
+  // Filter to only unique years for rendering (no duplicates)
+  const uniqueEvents = Array.from(
+    events.reduce((map, obj) => map.set(obj.year, obj), new Map()).values()
+  ).sort((a, b) => a.year - b.year).filter(e => e.year && !isNaN(e.year));
+
+  const years = uniqueEvents.map(e => e.year).filter(y => typeof y === 'number' && !isNaN(y));
+  const minYear = years.length > 0 ? Math.min(...years) : 2004;
+  const maxYear = years.length > 0 ? Math.max(...years) : 2025;
+
+  const eventSpacing = 240;
+  const timelineY = 200;
+  const topOffset = 80;
+  const bottomOffset = 80;
+
+  const eventPositions = uniqueEvents.map((event, idx) => {
+    const x = 120 + idx * eventSpacing;
+    const y = idx % 2 === 0 ? timelineY - topOffset : timelineY + bottomOffset;
+    return { x, y };
+  });
+
+  const addEvent = async () => {
+    try {
+      const year = prompt("Enter year:");
+      if (!year) return;
+      const photoUrl = prompt("Enter photo URL (or leave blank for placeholder):");
+      await addDoc(collection(db, "timelineEvents"), {
+        year: Number(year),
+        photoUrl: photoUrl || "",
+        createdAt: Date.now()
+      });
+    } catch (e) {
+      alert("Error adding event");
+    }
+  };
+
+  return (
+    <Section id="timeline">
+      <GlobalStyle />
+      <Title>Your Journey</Title>
+      <TimelineWrapper ref={wrapperRef} style={{position: 'relative'}}>
+        {/* Footsteps animation overlay */}
+        <div style={{position: 'absolute', left: 0, top: 0, width: '100%', height: 400, pointerEvents: 'none', zIndex: 2}}></div>
+        <TimelineLine />
+        <button style={{marginBottom: '2rem', position: 'absolute', left: 20, top: 10, zIndex: 3}} onClick={addEvent}>Add Timeline Event</button>
+        {/* Horizontal flex row for events */}
+        <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', width: '100%', position: 'relative', zIndex: 3}}>
+          {loading ? (
+            <div>Loading timeline...</div>
+          ) : error ? (
+            <div style={{color: 'red'}}>{error}</div>
+          ) : (
+            uniqueEvents.map((event, idx) => (
+              <TimelineEvent
+                key={event.id}
+                align={idx % 2 === 0 ? 'top' : 'bottom'}
+                style={{marginLeft: idx === 0 ? 120 : 0}}
+              >
+                <YearRose>
+                  {event.year}
+                  <RoseImg src="/images/rose.png" alt="rose" />
+                </YearRose>
+                <PhotoPlaceholder>
+                  <img
+                    src={event.photoUrl && event.photoUrl.trim() !== "" 
+                      ? event.photoUrl 
+                      : `/images/photo-${event.year}.jpg`}
+                    alt={`Photo for ${event.year}`}
+                    style={{maxWidth: '100%', maxHeight: '100%'}}
+                    onError={e => { e.target.onerror = null; e.target.src = '/images/fallback.jpg'; }}
+                  />
+                </PhotoPlaceholder>
+              </TimelineEvent>
+            ))
+          )}
+        </div>
+        {/* Scattered background emojis */}
+        <span className="timeline-bg-emoji" style={{top: '10%', left: '10%'}}>&#x1F49A;</span>
+        <span className="timeline-bg-emoji" style={{top: '20%', left: '30%'}}>&#x1F49B;</span>
+        <span className="timeline-bg-emoji" style={{top: '30%', left: '50%'}}>&#x1F49C;</span>
+        <span className="timeline-bg-emoji" style={{top: '40%', left: '70%'}}>&#x1F49D;</span>
+        <span className="timeline-bg-emoji" style={{top: '50%', left: '90%'}}>&#x1F49E;</span>
+      </TimelineWrapper>
+    </Section>
+  );
+};
 
 export default TimelineSection;

@@ -5,7 +5,8 @@ const theme = {
     accent: '#800020', // Burgundy
     background: '#fff8fa', // Soft White
     gray: '#6e6e6e',
-    gradient: 'linear-gradient(135deg, #ff69b4 0%, #fff8fa 100%)',
+    // Inverted gradient: lighter top left, darker bottom right
+    gradient: 'linear-gradient(135deg, #fff8fa 0%, #ff69b4 100%)',
   },
   fonts: {
     heading: `'Dancing Script', 'Pacifico', 'Great Vibes', cursive`,

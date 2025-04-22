@@ -30,6 +30,25 @@ const GlobalStyle = createGlobalStyle`
   * {
     box-sizing: inherit;
   }
+  ul, ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  nav ul {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 2.5rem;
+    align-items: center;
+    justify-content: center;
+  }
+  nav li {
+    display: flex;
+    align-items: center;
+  }
+  nav {
+    width: 100vw;
+  }
 `;
 
 export default GlobalStyle;

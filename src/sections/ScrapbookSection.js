@@ -2,8 +2,8 @@ import styled from 'styled-components';
 
 const Section = styled.section`
   min-height: 70vh;
-  background: #fff8fa;
-  padding: 4rem 0 2rem 0;
+  background: linear-gradient(135deg, #ffb6df 0%, #ffe1f0 100%);
+  padding: 12rem 0 8rem 0;
 `;
 
 const Title = styled.h2`
