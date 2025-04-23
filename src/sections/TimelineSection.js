@@ -235,13 +235,13 @@ const TimelineSection = () => {
           style={{
             display: 'flex',
             flexDirection: 'row',
-            alignItems: 'flex-end',
+            alignItems: 'center',
             width: '100%',
             position: 'relative',
             zIndex: 3,
-            flexWrap: 'wrap',
-            minHeight: '320px', // Ensures enough height for two rows
-            marginBottom: '4rem', // Adds separation from gallery
+            overflowX: 'auto',
+            minHeight: '320px',
+            marginBottom: '5rem',
           }}
         >
           {loading ? (
@@ -253,7 +253,7 @@ const TimelineSection = () => {
               <TimelineEvent
                 key={event.id}
                 align={idx % 2 === 0 ? 'top' : 'bottom'}
-                style={{marginLeft: idx === 0 ? 120 : 0, marginBottom: '2rem'}} // Add marginBottom for each event
+                style={{marginLeft: idx === 0 ? 120 : 0, marginBottom: 0}}
               >
                 <YearRose>
                   {event.year}
@@ -274,7 +274,7 @@ const TimelineSection = () => {
           )}
         </div>
         {/* Spacer to force section height and separation */}
-        <div style={{height: '120px', width: '100%'}}></div>
+        <div style={{height: '80px', width: '100%'}}></div>
         {/* Scattered background emojis */}
         <span className="timeline-bg-emoji" style={{top: '10%', left: '10%'}}>&#x1F49A;</span>
         <span className="timeline-bg-emoji" style={{top: '20%', left: '30%'}}>&#x1F49B;</span>
