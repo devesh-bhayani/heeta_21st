@@ -187,14 +187,15 @@ function angleBetween(p1, p2) {
 function useFootstepTrail(eventPositions, footstepsCount = 3, speed = 18000) {
   const [trail, setTrail] = useState([]);
   const requestRef = useRef();
+  const startRef = useRef(null);
   const totalSegments = Math.max(eventPositions.length - 1, 1);
   const trailSpacing = 0.08; // how far apart footsteps are (in progress units)
   useEffect(() => {
     if (eventPositions.length < 2) return;
-    let start = null;
+    startRef.current = null; // Reset animation start on deps change
     function animate(ts) {
-      if (!start) start = ts;
-      const elapsed = (ts - start) % speed;
+      if (!startRef.current) startRef.current = ts;
+      const elapsed = (ts - startRef.current) % speed;
       // progress: 0 to 1 over the whole path
       const progress = elapsed / speed;
       // Where is the head footstep?
@@ -319,14 +320,14 @@ const TimelineSection = () => {
               src="/footsteps-offset.svg"
               alt="Footsteps"
               style={{
-                width: '54px',
-                height: '54px',
+                width: '200px',
+                height: '200px',
                 objectFit: 'contain',
                 filter: 'drop-shadow(0 0 18px #ff69b4) drop-shadow(0 0 36px #ff0040)',
                 opacity: f.opacity,
                 position: 'absolute',
-                left: `${f.x - 27}px`,
-                top: `${f.y - 27}px`,
+                left: `${f.x - 100}px`,
+                top: `${f.y - 100}px`,
                 pointerEvents: 'none',
                 transform: `rotate(${f.angle}deg)`
               }}
