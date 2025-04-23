@@ -45,10 +45,8 @@ const Title = styled.h2`
 const TimelineWrapper = styled.div`
   width: 100vw;
   min-height: 520px;
-  padding: 5.5rem 0 7.5rem 0; /* Increased bottom padding for scroll bar space */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  padding: 5.5rem 0 7.5rem 0;
+  /* Remove flex properties to prevent vertical stacking */
   position: relative;
   background: transparent;
 `;
