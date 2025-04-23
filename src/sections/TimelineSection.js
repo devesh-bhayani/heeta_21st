@@ -312,7 +312,7 @@ const TimelineSection = () => {
   , [uniqueEvents, eventSpacing, timelineY, topOffset, bottomOffset]);
 
   // --- Use the new robust footsteps hook ---
-  const trail = useFootstepTrail(eventPositions, 3, 8000); // 3 footsteps, 8 seconds per loop
+  const trail = useFootstepTrail(eventPositions, 3, 30000); // 3 footsteps, 30 seconds per loop
 
   const addEvent = async () => {
     try {
