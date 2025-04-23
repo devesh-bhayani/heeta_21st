@@ -183,59 +183,62 @@ function angleBetween(p1, p2) {
   return Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
 }
 
-// --- REPLACE useFootstepTrail with robust version ---
-function useFootstepTrail(eventPositions, footstepsCount = 3, speed = 8000) {
-  const [progress, setProgress] = React.useState(0); // progress from 0 to 1
+// --- Segment-by-segment footsteps animation with pause at each block ---
+function useFootstepTrail(eventPositions, footstepsCount = 4, segmentDuration = 4000, pauseDuration = 1200) {
+  const [segmentIndex, setSegmentIndex] = React.useState(0);
+  const [segmentProgress, setSegmentProgress] = React.useState(0); // 0 to 1 within segment
+  const [paused, setPaused] = React.useState(false);
   const requestRef = React.useRef();
+  const lastTimeRef = React.useRef();
 
   React.useEffect(() => {
-    let lastTime;
     function animate(time) {
-      if (lastTime === undefined) lastTime = time;
-      const delta = time - lastTime;
-      lastTime = time;
-      setProgress(prev => {
-        let next = prev + delta / speed;
-        if (next > 1) next -= 1;
-        return next;
-      });
+      if (!lastTimeRef.current) lastTimeRef.current = time;
+      const delta = time - lastTimeRef.current;
+      lastTimeRef.current = time;
+      if (!paused) {
+        setSegmentProgress(prev => {
+          let next = prev + delta / segmentDuration;
+          if (next >= 1) {
+            setPaused(true);
+            setTimeout(() => {
+              setPaused(false);
+              setSegmentIndex(idx => (idx + 1) % (eventPositions.length - 1));
+              setSegmentProgress(0);
+              lastTimeRef.current = null;
+            }, pauseDuration);
+            return 1;
+          }
+          return next;
+        });
+      }
       requestRef.current = requestAnimationFrame(animate);
     }
     requestRef.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(requestRef.current);
-  }, [speed]);
+  }, [paused, segmentDuration, pauseDuration, eventPositions.length]);
 
   if (eventPositions.length < 2) return [];
-
+  const startPt = eventPositions[segmentIndex];
+  const endPt = eventPositions[segmentIndex + 1];
   const totalSegments = eventPositions.length - 1;
-  const trailSpacing = 0.012; // Even closer steps
-  const footstepsArr = [];
+  const trailSpacing = 0.012;
   const stepOffset = 18; // px offset from the path center
+  const footstepsArr = [];
   for (let i = 0; i < footstepsCount; i++) {
-    let t = progress - i * trailSpacing;
-    if (t < 0) t += 1; // wrap around
-    let pathPos = t * totalSegments;
-    let seg = Math.floor(pathPos);
-    let localT = pathPos - seg;
-    if (seg >= totalSegments) {
-      seg = totalSegments - 1;
-      localT = 1;
-    }
-    const startPt = eventPositions[seg];
-    const endPt = eventPositions[seg + 1];
-    const curve = Math.sin(localT * Math.PI) * 40 * (seg % 2 === 0 ? 1 : -1);
-    // Path position
+    let t = Math.max(0, segmentProgress - i * trailSpacing);
+    t = Math.max(0, Math.min(t, 1));
+    const curve = Math.sin(t * Math.PI) * 40 * (segmentIndex % 2 === 0 ? 1 : -1);
     const base = {
-      x: startPt.x + (endPt.x - startPt.x) * localT,
-      y: startPt.y + (endPt.y - startPt.y) * localT + curve,
+      x: startPt.x + (endPt.x - startPt.x) * t,
+      y: startPt.y + (endPt.y - startPt.y) * t + curve,
     };
-    let nextT = Math.min(localT + 0.01, 1);
+    let nextT = Math.min(t + 0.01, 1);
     let nextPos = {
       x: startPt.x + (endPt.x - startPt.x) * nextT,
-      y: startPt.y + (endPt.y - startPt.y) * nextT + Math.sin(nextT * Math.PI) * 40 * (seg % 2 === 0 ? 1 : -1),
+      y: startPt.y + (endPt.y - startPt.y) * nextT + Math.sin(nextT * Math.PI) * 40 * (segmentIndex % 2 === 0 ? 1 : -1),
     };
     const angleRad = Math.atan2(nextPos.y - base.y, nextPos.x - base.x);
-    // Alternate left/right offset for each step, like real walking
     const isLeft = i % 2 === 0;
     const offsetAngle = angleRad + (isLeft ? -Math.PI/2 : Math.PI/2);
     const offsetX = Math.cos(offsetAngle) * stepOffset;
@@ -243,10 +246,10 @@ function useFootstepTrail(eventPositions, footstepsCount = 3, speed = 8000) {
     footstepsArr.push({
       x: base.x + offsetX,
       y: base.y + offsetY,
-      angle: angleRad * 180 / Math.PI + 90, // Heel at back, toe forward
+      angle: angleRad * 180 / Math.PI + 90,
       opacity: 1 - (i / footstepsCount),
       isLeft,
-      key: `footstep-${i}`,
+      key: `footstep-${segmentIndex}-${i}`,
     });
   }
   return footstepsArr;
@@ -321,7 +324,7 @@ const TimelineSection = () => {
 
   // --- Use the new robust footsteps hook ---
   const footstepsCount = 4; // Show 4 footsteps together
-  const trail = useFootstepTrail(eventPositions, footstepsCount, 90000); // 4 footsteps, 90 seconds per loop (very slow)
+  const trail = useFootstepTrail(eventPositions, footstepsCount, 4000, 1200); // 4 footsteps, 4s per segment, 1.2s pause at each block
 
   const addEvent = async () => {
     try {
