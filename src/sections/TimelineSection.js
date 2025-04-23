@@ -47,20 +47,25 @@ const TimelineWrapper = styled.div`
   min-height: 520px;
   padding: 5.5rem 0 7.5rem 0; /* Increased bottom padding for scroll bar space */
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   position: relative;
-  overflow-x: auto;
   background: transparent;
-  /* Custom scrollbar styling */
+`;
+
+const TimelineScrollRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100vw;
+  overflow-x: auto;
+  padding-bottom: 3.5rem; /* Ample space below timeline events and above scrollbar */
   scrollbar-width: thin;
   scrollbar-color: #ffb6df #ffe1fa;
-
   &::-webkit-scrollbar {
-    height: 8px; /* Make scrollbar thinner */
+    height: 6px;
     background: #ffe1fa;
     border-radius: 6px;
-    margin-top: 24px;
   }
   &::-webkit-scrollbar-thumb {
     background: #ffb6df;
@@ -243,20 +248,8 @@ const TimelineSection = () => {
         <div style={{position: 'absolute', left: 0, top: 0, width: '100%', height: 400, pointerEvents: 'none', zIndex: 2}}></div>
         <TimelineLine />
         <button style={{marginBottom: '2rem', position: 'absolute', left: 20, top: 10, zIndex: 3}} onClick={addEvent}>Add Timeline Event</button>
-        {/* Horizontal flex row for events */}
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            width: '100%',
-            position: 'relative',
-            zIndex: 3,
-            overflowX: 'auto',
-            minHeight: '320px',
-            marginBottom: '5rem',
-          }}
-        >
+        {/* Horizontal scrollable row for events */}
+        <TimelineScrollRow>
           {loading ? (
             <div>Loading timeline...</div>
           ) : error ? (
@@ -285,9 +278,9 @@ const TimelineSection = () => {
               </TimelineEvent>
             ))
           )}
-        </div>
+        </TimelineScrollRow>
         {/* Spacer to force section height and separation */}
-        <div style={{height: '80px', width: '100%'}}></div>
+        <div style={{height: '40px', width: '100%'}}></div>
         {/* Scattered background emojis */}
         <span className="timeline-bg-emoji" style={{top: '10%', left: '10%'}}>&#x1F49A;</span>
         <span className="timeline-bg-emoji" style={{top: '20%', left: '30%'}}>&#x1F49B;</span>
