@@ -229,7 +229,10 @@ function useFootstepTrail(eventPositions, footstepsCount = 3, speed = 18000) {
         });
       }
       setTrail(footstepsArr);
-      console.log("Footstep animation frame", footstepsArr[0]);
+      // DEBUG: Log the trail for troubleshooting
+      if (footstepsArr.length > 0) {
+        console.log("Footstep animation frame", footstepsArr);
+      }
       requestRef.current = requestAnimationFrame(animate);
     }
     requestRef.current = requestAnimationFrame(animate);
@@ -341,10 +344,26 @@ const TimelineSection = () => {
           zIndex: 4,
           overflow: 'visible',
         }}>
+          {/* Debug path for footsteps (optional, can remove later) */}
+          <svg width="100%" height="100%" style={{ position: 'absolute', left: 0, top: 0, pointerEvents: 'none', zIndex: 3 }}>
+            {eventPositions.map((pt, idx) => idx < eventPositions.length - 1 && (
+              <line
+                key={idx}
+                x1={pt.x}
+                y1={pt.y}
+                x2={eventPositions[idx + 1].x}
+                y2={eventPositions[idx + 1].y}
+                stroke="#ffb6df"
+                strokeDasharray="8 6"
+                strokeWidth="3"
+                opacity="0.25"
+              />
+            ))}
+          </svg>
           {trail.map((f, idx) => (
             <img
               key={f.key}
-              src="/footsteps-offset.svg"
+              src={"/footsteps-offset.svg"}
               alt="Footsteps"
               style={{
                 width: '54px',
@@ -358,6 +377,7 @@ const TimelineSection = () => {
                 pointerEvents: 'none',
                 transform: `rotate(${f.angle}deg)`
               }}
+              onError={e => { e.target.onerror = null; e.target.src = 'https://upload.wikimedia.org/wikipedia/commons/8/84/Example.svg'; }}
             />
           ))}
         </div>
