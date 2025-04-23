@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
 const Section = styled.section`
-  min-height: 80vh;
+  min-height: 90vh;
   width: 100vw;
   background: linear-gradient(120deg, #fffbe8 0%, #ffe1fa 100%);
-  padding: 5rem 0 3rem 0;
+  padding: 6rem 0 5rem 0;
   margin-top: 5rem;
   margin-bottom: 5rem;
   border-bottom: 1.5px solid #ffd6eb;
@@ -63,13 +63,11 @@ const AnimatedBg = styled.div`
 `;
 
 const Title = styled(motion.h1)`
-  font-size: 3rem;
-  margin-bottom: 1rem;
-`;
-
-const Subtitle = styled(motion.p)`
-  font-size: 1.5rem;
-  margin-bottom: 2.5rem;
+  font-size: 3.2rem;
+  margin-bottom: 1.5rem;
+  color: #ff69b4;
+  font-family: 'Dancing Script', cursive;
+  text-align: center;
 `;
 
 const PlayButton = styled(motion.button)`
@@ -100,10 +98,10 @@ const Overlay = styled.div`
 `;
 
 const Video = styled.video`
-  width: 90vw;
-  height: 90vh;
+  width: 92vw;
   max-width: 900px;
-  max-height: 95vh;
+  height: 86vh;
+  min-height: 500px;
   border-radius: 18px;
   box-shadow: 0 4px 32px rgba(255, 105, 180, 0.22);
   background: #fff8fa;
@@ -130,15 +128,8 @@ export default function LandingSection() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
       >
-        Happy Birthday, My Love!
+        HAPPY BIRTHDAY HEETU
       </Title>
-      <Subtitle
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 1 }}
-      >
-        Welcome to your surprise birthday experience
-      </Subtitle>
       <PlayButton
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
