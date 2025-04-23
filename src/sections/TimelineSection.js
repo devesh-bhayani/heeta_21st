@@ -161,6 +161,10 @@ const GlobalStyle = createGlobalStyle`
     50% { filter: drop-shadow(0 0 12px #ff0040ff) drop-shadow(0 0 32px #ff0040ff) drop-shadow(0 0 22px #ff0040ff); }
     100% { filter: drop-shadow(0 0 0px #ff0040cc) drop-shadow(0 0 16px #ff0040cc) drop-shadow(0 0 8px #ff0040cc); }
   }
+  @keyframes footstepsMove {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+  }
 `;
 
 const TimelineSection = () => {
@@ -228,7 +232,27 @@ const TimelineSection = () => {
       <Title>Your Journey</Title>
       <TimelineWrapper ref={wrapperRef} style={{position: 'relative'}}>
         {/* Footsteps animation overlay */}
-        <div style={{position: 'absolute', left: 0, top: 0, width: '100%', height: 400, pointerEvents: 'none', zIndex: 2}}></div>
+        <div style={{
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          width: '100%',
+          height: 400,
+          pointerEvents: 'none',
+          zIndex: 4
+        }}>
+          <img
+            src="/footsteps-offset.svg"
+            alt="Footsteps animation"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'contain',
+              animation: 'footstepsMove 7s linear infinite',
+              opacity: 0.45
+            }}
+          />
+        </div>
         <TimelineLine />
         <button style={{marginBottom: '2rem', position: 'absolute', left: 20, top: 10, zIndex: 3}} onClick={addEvent}>Add Timeline Event</button>
         {/* Horizontal flex row for events */}
