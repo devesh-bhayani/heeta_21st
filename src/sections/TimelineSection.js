@@ -266,7 +266,7 @@ const TimelineSection = () => {
     return () => unsub();
   }, []);
 
-  // Filter to only unique years for rendering (no duplicates)
+  // --- PATCH: Ensure at least two events for animation, even with missing or duplicate data ---
   let uniqueEvents = Array.from(
     events.reduce((map, obj) => {
       // Ensure year is a number
@@ -278,11 +278,13 @@ const TimelineSection = () => {
     }, new Map()).values()
   ).sort((a, b) => a.year - b.year);
 
-  // AUTOMATION: If there are less than 2 events, add a dummy event for animation
+  // PATCH: If less than 2 events, fill with current year and next year for animation
   if (uniqueEvents.length < 2) {
+    const now = new Date();
+    const thisYear = now.getFullYear();
     uniqueEvents = [
-      { year: 2004, photoUrl: '', id: 'dummy1' },
-      { year: 2005, photoUrl: '', id: 'dummy2' }
+      { year: thisYear, photoUrl: '', id: 'dummy1' },
+      { year: thisYear + 1, photoUrl: '', id: 'dummy2' }
     ];
   }
 
@@ -295,12 +297,16 @@ const TimelineSection = () => {
   const topOffset = 80;
   const bottomOffset = 80;
 
+  // PATCH: Defensive fallback for eventPositions to always have at least 2 points
   const eventPositions = useMemo(() =>
-    uniqueEvents.map((event, idx) => {
-      const x = 120 + idx * eventSpacing;
-      const y = idx % 2 === 0 ? timelineY - topOffset : timelineY + bottomOffset;
-      return { x, y };
-    }), [uniqueEvents, eventSpacing, timelineY, topOffset, bottomOffset]);
+    uniqueEvents.length < 2
+      ? [ { x: 120, y: 120 }, { x: 360, y: 320 } ]
+      : uniqueEvents.map((event, idx) => {
+          const x = 120 + idx * eventSpacing;
+          const y = idx % 2 === 0 ? timelineY - topOffset : timelineY + bottomOffset;
+          return { x, y };
+        })
+  , [uniqueEvents, eventSpacing, timelineY, topOffset, bottomOffset]);
 
   const trail = useFootstepTrail(eventPositions, 3, 18000); // 3 footsteps, very slow
 
