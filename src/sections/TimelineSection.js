@@ -44,7 +44,7 @@ const Title = styled.h2`
 
 const TimelineWrapper = styled.div`
   width: 100vw;
-  min-height: 520px;
+  min-height: 475px;
   padding: 3.5rem 0 4.5rem 0; /* Restore original padding */
   display: flex;
   flex-direction: row;
