@@ -268,8 +268,15 @@ const TimelineSection = () => {
 
   // Filter to only unique years for rendering (no duplicates)
   let uniqueEvents = Array.from(
-    events.reduce((map, obj) => map.set(obj.year, obj), new Map()).values()
-  ).sort((a, b) => a.year - b.year).filter(e => e.year && !isNaN(e.year));
+    events.reduce((map, obj) => {
+      // Ensure year is a number
+      const yearNum = typeof obj.year === 'string' ? parseInt(obj.year, 10) : obj.year;
+      if (yearNum && !isNaN(yearNum)) {
+        map.set(yearNum, { ...obj, year: yearNum });
+      }
+      return map;
+    }, new Map()).values()
+  ).sort((a, b) => a.year - b.year);
 
   // AUTOMATION: If there are less than 2 events, add a dummy event for animation
   if (uniqueEvents.length < 2) {
