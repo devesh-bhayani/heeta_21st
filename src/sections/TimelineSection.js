@@ -55,7 +55,7 @@ const TimelineScrollRow = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  width: 100vw;
+  min-width: max-content; /* Ensures horizontal row, no wrapping */
   overflow-x: auto;
   padding-bottom: 3.5rem; /* Ample space below timeline events and above scrollbar */
   scrollbar-width: thin;
