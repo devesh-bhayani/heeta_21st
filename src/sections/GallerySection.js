@@ -8,8 +8,18 @@ import styled from 'styled-components';
  * from above and below sections.
  */
 const Section = styled.section`
-  min-height: 90vh;
   width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  scroll-snap-align: start;
+  position: relative;
+  box-sizing: border-box;
   background: linear-gradient(135deg, #ff69b4 0%, #ffc0cb 100%);
   padding: 6rem 0 5rem 0;
   margin-top: 5rem; /* Robust separation from above */

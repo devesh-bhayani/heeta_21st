@@ -14,17 +14,18 @@ import {
 import { createGlobalStyle } from 'styled-components';
 
 const Section = styled.section`
-  min-height: 90vh;
   width: 100vw;
-  background: linear-gradient(120deg, #ffe1fa 0%, #ffb6df 60%, #ff8ac6 100%);
-  padding: 6rem 0 5rem 0;
-  overflow-x: auto;
-  overflow-y: visible;
-  position: relative;
-  box-sizing: border-box;
+  height: 100vh;
+  min-height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  scroll-snap-align: start;
+  position: relative;
+  box-sizing: border-box;
 `;
 
 const Title = styled.h2`

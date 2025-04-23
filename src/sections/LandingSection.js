@@ -4,22 +4,24 @@ import { motion } from 'framer-motion';
 
 // --- Enhanced Landing Section Styling ---
 const Section = styled.section`
-  min-height: 100vh;
-  min-width: 100vw;
   width: 100vw;
   height: 100vh;
-  background: linear-gradient(120deg, #ffe1fa 0%, #ffd6eb 55%, #fffbe8 100%);
-  padding: 0;
-  margin: 0;
+  min-height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  scroll-snap-align: start;
   position: relative;
+  box-sizing: border-box;
+  background: linear-gradient(120deg, #ffe1fa 0%, #ffd6eb 55%, #fffbe8 100%);
+  padding: 0;
+  margin: 0;
   z-index: 1;
   overflow: hidden;
   box-sizing: border-box;
-  scroll-snap-align: start;
 `;
 
 const AnimatedBg = styled.div`
@@ -131,7 +133,7 @@ export default function LandingSection() {
   const handleClose = () => setShowVideo(false);
 
   return (
-    <Section id="landing" style={{ scrollSnapAlign: 'start' }}>
+    <Section id="landing">
       <AnimatedBg>
         <span role="img" aria-label="cake">🎂</span>
         <span role="img" aria-label="party">🎉</span>

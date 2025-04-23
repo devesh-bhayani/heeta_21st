@@ -8,20 +8,23 @@ import Confetti from '../components/Confetti';
 
 // --- Section: Pink Gradient Background ---
 const Section = styled.section`
-  min-height: 110vh;
   width: 100vw;
-  background: linear-gradient(135deg, #ffb6df 0%, #ff8ac6 100%);
-  padding: 6rem 0 5rem 0;
+  height: 100vh;
+  min-height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  z-index: 1;
-  overflow: hidden;
+  scroll-snap-align: start;
   position: relative;
-  margin-top: 6rem;
-  margin-bottom: 6rem;
-  margin: 4rem;
+  box-sizing: border-box;
+  background: linear-gradient(135deg, #ffb6df 0%, #ff8ac6 100%);
+  padding: 6rem 0 5rem 0;
+  z-index: 1;
+  margin-top: 0;
+  margin-bottom: 0;
   box-shadow: 0 6px 24px -10px #ff8ac680;
 
   /* Romantic emoji background */

@@ -18,19 +18,26 @@ export default function Home() {
     <>
       <ScrollToTopOnLoad />
       <NavBar />
-      <LandingSection />
-      <div id="timeline-anchor" style={{
-        minHeight: '100vh',
-        boxSizing: 'border-box',
+      <div style={{
         width: '100vw',
-        overflow: 'hidden',
-        background: 'linear-gradient(135deg, #fffbe8 0%, #ffe1fa 100%)',
-        display: 'block',
-        position: 'relative'
+        height: '100vh',
+        overflowY: 'auto',
+        scrollSnapType: 'y mandatory',
       }}>
-        <LoveLetterSection />
-        <GallerySection />
-        <TimelineSection />
+        <LandingSection />
+        <div id="timeline-anchor" style={{
+          minHeight: '100vh',
+          boxSizing: 'border-box',
+          width: '100vw',
+          overflow: 'hidden',
+          background: 'linear-gradient(135deg, #fffbe8 0%, #ffe1fa 100%)',
+          display: 'block',
+          position: 'relative'
+        }}>
+          <LoveLetterSection />
+          <GallerySection />
+          <TimelineSection />
+        </div>
       </div>
     </>
   );
