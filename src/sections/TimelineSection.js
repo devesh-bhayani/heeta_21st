@@ -208,7 +208,7 @@ function useFootstepTrail(eventPositions, footstepsCount = 3, speed = 8000) {
   if (eventPositions.length < 2) return [];
 
   const totalSegments = eventPositions.length - 1;
-  const trailSpacing = 0.08;
+  const trailSpacing = 0.025; // Much closer steps
   const footstepsArr = [];
   for (let i = 0; i < footstepsCount; i++) {
     let t = progress - i * trailSpacing;
@@ -313,7 +313,7 @@ const TimelineSection = () => {
 
   // --- Use the new robust footsteps hook ---
   const footstepsCount = 4; // Show 4 footsteps together
-  const trail = useFootstepTrail(eventPositions, footstepsCount, 30000); // 4 footsteps, 30 seconds per loop
+  const trail = useFootstepTrail(eventPositions, footstepsCount, 60000); // 4 footsteps, 60 seconds per loop (slower)
 
   const addEvent = async () => {
     try {
