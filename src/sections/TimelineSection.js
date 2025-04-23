@@ -183,13 +183,15 @@ function angleBetween(p1, p2) {
   return Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
 }
 
-// --- Segment-by-segment footsteps animation with pause at each block ---
-function useFootstepTrail(eventPositions, footstepsCount = 4, segmentDuration = 4000, pauseDuration = 1200) {
-  const [segmentIndex, setSegmentIndex] = React.useState(0);
-  const [segmentProgress, setSegmentProgress] = React.useState(0); // 0 to 1 within segment
+// --- Repeat footsteps animation 3 times between each pair of blocks, for all segments ---
+function useFootstepTrail(eventPositions, footstepsCount = 3, segmentDuration = 18000, pauseDuration = 2600) {
+  const [progress, setProgress] = React.useState(0); // 0 to 1 over all segments
   const [paused, setPaused] = React.useState(false);
   const requestRef = React.useRef();
   const lastTimeRef = React.useRef();
+  const repeatCount = 3;
+  const totalSegments = eventPositions.length - 1;
+  const totalCycles = totalSegments * repeatCount;
 
   React.useEffect(() => {
     function animate(time) {
@@ -197,14 +199,13 @@ function useFootstepTrail(eventPositions, footstepsCount = 4, segmentDuration = 
       const delta = time - lastTimeRef.current;
       lastTimeRef.current = time;
       if (!paused) {
-        setSegmentProgress(prev => {
-          let next = prev + delta / segmentDuration;
+        setProgress(prev => {
+          let next = prev + delta / (segmentDuration * totalSegments);
           if (next >= 1) {
             setPaused(true);
             setTimeout(() => {
               setPaused(false);
-              setSegmentIndex(idx => (idx + 1) % (eventPositions.length - 1));
-              setSegmentProgress(0);
+              setProgress(0);
               lastTimeRef.current = null;
             }, pauseDuration);
             return 1;
@@ -219,15 +220,20 @@ function useFootstepTrail(eventPositions, footstepsCount = 4, segmentDuration = 
   }, [paused, segmentDuration, pauseDuration, eventPositions.length]);
 
   if (eventPositions.length < 2) return [];
+
+  // Calculate current segment and cycle
+  const overallCycle = progress * totalCycles;
+  const segmentIndex = Math.floor(overallCycle / repeatCount);
+  const cycleInSegment = overallCycle % repeatCount;
+  const tInCycle = (overallCycle - Math.floor(overallCycle)) || 0;
+
   const startPt = eventPositions[segmentIndex];
   const endPt = eventPositions[segmentIndex + 1];
-  const totalSegments = eventPositions.length - 1;
-  const repeatCount = 3;
-  const effectiveProgress = (segmentProgress * repeatCount) % 1;
-  const trailSpacing = 0.09; // More space between steps
+  const trailSpacing = 0.09;
+  const stepOffset = 18;
   const footstepsArr = [];
   for (let i = 0; i < footstepsCount; i++) {
-    let t = Math.max(0, effectiveProgress - i * trailSpacing);
+    let t = Math.max(0, tInCycle - i * trailSpacing);
     t = Math.max(0, Math.min(t, 1));
     const curve = Math.sin(t * Math.PI) * 40 * (segmentIndex % 2 === 0 ? 1 : -1);
     const base = {
@@ -242,10 +248,10 @@ function useFootstepTrail(eventPositions, footstepsCount = 4, segmentDuration = 
     const angleRad = Math.atan2(nextPos.y - base.y, nextPos.x - base.x);
     const isLeft = i % 2 === 0;
     const offsetAngle = angleRad + (isLeft ? -Math.PI/2 : Math.PI/2);
-    const offsetX = Math.cos(offsetAngle) * 18;
-    const offsetY = Math.sin(offsetAngle) * 18;
+    const offsetX = Math.cos(offsetAngle) * stepOffset;
+    const offsetY = Math.sin(offsetAngle) * stepOffset;
 
-    // --- Realistic opacity transition logic ---
+    // Realistic opacity transition logic
     let opacity = 0.3;
     if (i === 0) {
       opacity = t < 0.6 ? 1 : 1 - (t - 0.6) / 0.4;
@@ -261,7 +267,7 @@ function useFootstepTrail(eventPositions, footstepsCount = 4, segmentDuration = 
       angle: angleRad * 180 / Math.PI + 90,
       opacity,
       isLeft,
-      key: `footstep-${segmentIndex}-${i}`,
+      key: `footstep-${segmentIndex}-${cycleInSegment}-${i}`,
     });
   }
   return footstepsArr;
