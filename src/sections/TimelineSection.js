@@ -254,6 +254,7 @@ const TimelineSection = () => {
       q,
       (snapshot) => {
         const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        console.log("Fetched events:", data); // DEBUG: Log all fetched events
         setEvents(data);
         setLoading(false);
       },
