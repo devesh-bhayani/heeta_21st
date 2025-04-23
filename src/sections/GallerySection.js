@@ -10,7 +10,7 @@ import styled from 'styled-components';
 const Section = styled.section`
   min-height: 90vh;
   width: 100vw;
-  background: linear-gradient(135deg, #ffb6df 0%, #ff90c2 100%);
+  background: linear-gradient(135deg, #ff69b4 0%, #ffc0cb 100%);
   padding: 6rem 0 5rem 0;
   margin-top: 5rem; /* Robust separation from above */
   margin-bottom: 5rem; /* Robust separation from below */

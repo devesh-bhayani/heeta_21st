@@ -7,8 +7,8 @@ const Section = styled.section`
   width: 100vw;
   background: linear-gradient(120deg, #fffbe8 0%, #ffe1fa 100%);
   padding: 5rem 0 3rem 0;
-  margin-top: 5rem; /* Increased for robust separation */
-  margin-bottom: 5rem; /* Increased for robust separation */
+  margin-top: 5rem;
+  margin-bottom: 5rem;
   border-bottom: 1.5px solid #ffd6eb;
   box-shadow: 0 6px 24px -10px #ffd6eb80;
   display: flex;
@@ -17,7 +17,6 @@ const Section = styled.section`
   justify-content: center;
   position: relative;
   z-index: 1;
-  /* Prevent accidental overlap */
   overflow: visible;
 `;
 
