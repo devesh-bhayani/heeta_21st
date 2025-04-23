@@ -45,15 +45,27 @@ const Title = styled.h2`
 const TimelineWrapper = styled.div`
   width: 100vw;
   min-height: 520px;
-  padding: 5.5rem 0 6.5rem 0; /* Increased top and bottom padding for extra space */
+  padding: 5.5rem 0 7.5rem 0; /* Increased bottom padding for scroll bar space */
   display: flex;
   flex-direction: row;
   align-items: center;
   position: relative;
   overflow-x: auto;
   background: transparent;
-  scroll-snap-type: x mandatory;
-  z-index: 2;
+  /* Custom scrollbar styling */
+  scrollbar-width: thin;
+  scrollbar-color: #ffb6df #ffe1fa;
+
+  &::-webkit-scrollbar {
+    height: 8px; /* Make scrollbar thinner */
+    background: #ffe1fa;
+    border-radius: 6px;
+    margin-top: 24px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #ffb6df;
+    border-radius: 6px;
+  }
 `;
 
 const TimelineLine = styled.div`
