@@ -161,9 +161,11 @@ const GlobalStyle = createGlobalStyle`
     50% { filter: drop-shadow(0 0 12px #ff0040ff) drop-shadow(0 0 32px #ff0040ff) drop-shadow(0 0 22px #ff0040ff); }
     100% { filter: drop-shadow(0 0 0px #ff0040cc) drop-shadow(0 0 16px #ff0040cc) drop-shadow(0 0 8px #ff0040cc); }
   }
-  @keyframes footstepsMove {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-100%); }
+  @keyframes footstepsWalk {
+    0% { left: 0; opacity: 0.7; }
+    10% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { left: calc(100vw - 300px); opacity: 0.7; }
   }
 `;
 
@@ -235,21 +237,26 @@ const TimelineSection = () => {
         <div style={{
           position: 'absolute',
           left: 0,
-          top: 0,
+          top: 'calc(50% - 40px)', // Center footsteps on timeline line
           width: '100%',
-          height: 400,
+          height: '80px', // Height for footsteps
           pointerEvents: 'none',
-          zIndex: 4
+          zIndex: 4,
+          overflow: 'visible',
         }}>
           <img
             src="/footsteps-offset.svg"
             alt="Footsteps animation"
             style={{
-              width: '100%',
-              height: '100%',
+              width: '300px', // Adjust size to match screenshot
+              height: '80px',
               objectFit: 'contain',
-              animation: 'footstepsMove 7s linear infinite',
-              opacity: 0.45
+              filter: 'drop-shadow(0 0 18px #ff69b4) drop-shadow(0 0 36px #ff0040)',
+              opacity: 0.7,
+              position: 'absolute',
+              left: 0,
+              top: 0,
+              animation: 'footstepsWalk 5s linear infinite',
             }}
           />
         </div>
