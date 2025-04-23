@@ -4,15 +4,17 @@ import TimelineSection from '../sections/TimelineSection';
 import GallerySection from '../sections/GallerySection';
 import LoveLetterSection from '../sections/LoveLetterSection';
 
+// Ensure main container has padding-top to prevent overlap with fixed navbar
 export default function Home() {
   return (
-    <main style={{ minHeight: '100vh', width: '100vw', overflow: 'hidden', background: 'linear-gradient(135deg, #fffbe8 0%, #ffe1fa 100%)', display: 'block', position: 'relative' }}>
+    <>
       <NavBar />
-      {/* Remove spacer div for navbar, let landing section start at top */}
       <LandingSection />
-      <TimelineSection />
-      <GallerySection />
-      <LoveLetterSection />
-    </main>
+      <div style={{ paddingTop: '60px', minHeight: '100vh', boxSizing: 'border-box', width: '100vw', overflow: 'hidden', background: 'linear-gradient(135deg, #fffbe8 0%, #ffe1fa 100%)', display: 'block', position: 'relative' }}>
+        <TimelineSection />
+        <GallerySection />
+        <LoveLetterSection />
+      </div>
+    </>
   );
 }

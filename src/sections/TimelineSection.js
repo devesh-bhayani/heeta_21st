@@ -63,11 +63,8 @@ const TimelineLine = styled.div`
   right: 0;
   height: 6px;
   width: 100%;
-  background: repeating-linear-gradient(
-    to right,
-    #ffb6df 0 18px,
-    #fff8fa 18px 36px
-  );
+  background: transparent !important;
+  border: none !important;
   border-radius: 3px;
   z-index: 2;
 `;
@@ -190,7 +187,7 @@ function useFootstepTrail(eventPositions, footstepsCount = 6, segmentDuration = 
   const requestRef = React.useRef();
   const lastTimeRef = React.useRef();
   const repeatCount = 3;
-  const totalSegments = eventPositions.length - 1;
+  const totalSegments = eventPositions?.length - 1 || 0;
   const totalCycles = totalSegments * repeatCount;
 
   React.useEffect(() => {
@@ -217,9 +214,9 @@ function useFootstepTrail(eventPositions, footstepsCount = 6, segmentDuration = 
     }
     requestRef.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(requestRef.current);
-  }, [paused, segmentDuration, pauseDuration, eventPositions.length]);
+  }, [paused, segmentDuration, pauseDuration, eventPositions?.length]);
 
-  if (eventPositions.length < 2) return [];
+  if (!eventPositions || eventPositions.length < 2) return [];
 
   // Calculate current segment and cycle
   const overallCycle = progress * totalCycles;
@@ -229,6 +226,7 @@ function useFootstepTrail(eventPositions, footstepsCount = 6, segmentDuration = 
 
   const startPt = eventPositions[segmentIndex];
   const endPt = eventPositions[segmentIndex + 1];
+  if (!startPt || !endPt) return [];
   const trailSpacing = 0.09;
   const stepOffset = 18;
   const footstepsArr = [];
