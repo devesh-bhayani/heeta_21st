@@ -1,7 +1,7 @@
 // CASCADE TEST COMMENT: If you see this after a browser refresh, you are editing the correct file!
 
 import styled from 'styled-components';
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import { db } from "../utils/firebase";
 import {
   collection,
@@ -275,11 +275,12 @@ const TimelineSection = () => {
   const topOffset = 80;
   const bottomOffset = 80;
 
-  const eventPositions = uniqueEvents.map((event, idx) => {
-    const x = 120 + idx * eventSpacing;
-    const y = idx % 2 === 0 ? timelineY - topOffset : timelineY + bottomOffset;
-    return { x, y };
-  });
+  const eventPositions = useMemo(() =>
+    uniqueEvents.map((event, idx) => {
+      const x = 120 + idx * eventSpacing;
+      const y = idx % 2 === 0 ? timelineY - topOffset : timelineY + bottomOffset;
+      return { x, y };
+    }), [uniqueEvents, eventSpacing, timelineY, topOffset, bottomOffset]);
 
   const trail = useFootstepTrail(eventPositions, 3, 18000); // 3 footsteps, very slow
 
