@@ -45,30 +45,15 @@ const Title = styled.h2`
 const TimelineWrapper = styled.div`
   width: 100vw;
   min-height: 520px;
-  padding: 5.5rem 0 7.5rem 0;
-  /* Remove flex properties to prevent vertical stacking */
-  position: relative;
-  background: transparent;
-`;
-
-const TimelineScrollRow = styled.div`
+  padding: 3.5rem 0 4.5rem 0; /* Restore original padding */
   display: flex;
   flex-direction: row;
   align-items: center;
-  min-width: max-content; /* Ensures horizontal row, no wrapping */
+  position: relative;
   overflow-x: auto;
-  padding-bottom: 3.5rem; /* Ample space below timeline events and above scrollbar */
-  scrollbar-width: thin;
-  scrollbar-color: #ffb6df #ffe1fa;
-  &::-webkit-scrollbar {
-    height: 6px;
-    background: #ffe1fa;
-    border-radius: 6px;
-  }
-  &::-webkit-scrollbar-thumb {
-    background: #ffb6df;
-    border-radius: 6px;
-  }
+  background: transparent;
+  scroll-snap-type: x mandatory;
+  z-index: 2;
 `;
 
 const TimelineLine = styled.div`
@@ -246,8 +231,20 @@ const TimelineSection = () => {
         <div style={{position: 'absolute', left: 0, top: 0, width: '100%', height: 400, pointerEvents: 'none', zIndex: 2}}></div>
         <TimelineLine />
         <button style={{marginBottom: '2rem', position: 'absolute', left: 20, top: 10, zIndex: 3}} onClick={addEvent}>Add Timeline Event</button>
-        {/* Horizontal scrollable row for events */}
-        <TimelineScrollRow>
+        {/* Horizontal flex row for events */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            width: '100%',
+            position: 'relative',
+            zIndex: 3,
+            overflowX: 'auto',
+            minHeight: '320px',
+            marginBottom: '5rem',
+          }}
+        >
           {loading ? (
             <div>Loading timeline...</div>
           ) : error ? (
@@ -276,9 +273,9 @@ const TimelineSection = () => {
               </TimelineEvent>
             ))
           )}
-        </TimelineScrollRow>
+        </div>
         {/* Spacer to force section height and separation */}
-        <div style={{height: '40px', width: '100%'}}></div>
+        <div style={{height: '80px', width: '100%'}}></div>
         {/* Scattered background emojis */}
         <span className="timeline-bg-emoji" style={{top: '10%', left: '10%'}}>&#x1F49A;</span>
         <span className="timeline-bg-emoji" style={{top: '20%', left: '30%'}}>&#x1F49B;</span>
