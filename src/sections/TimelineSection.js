@@ -266,9 +266,17 @@ const TimelineSection = () => {
   }, []);
 
   // Filter to only unique years for rendering (no duplicates)
-  const uniqueEvents = Array.from(
+  let uniqueEvents = Array.from(
     events.reduce((map, obj) => map.set(obj.year, obj), new Map()).values()
   ).sort((a, b) => a.year - b.year).filter(e => e.year && !isNaN(e.year));
+
+  // AUTOMATION: If there are less than 2 events, add a dummy event for animation
+  if (uniqueEvents.length < 2) {
+    uniqueEvents = [
+      { year: 2004, photoUrl: '', id: 'dummy1' },
+      { year: 2005, photoUrl: '', id: 'dummy2' }
+    ];
+  }
 
   const years = uniqueEvents.map(e => e.year).filter(y => typeof y === 'number' && !isNaN(y));
   const minYear = years.length > 0 ? Math.min(...years) : 2004;
