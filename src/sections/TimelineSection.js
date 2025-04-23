@@ -135,8 +135,8 @@ const RoseImg = styled.img`
 `;
 
 const PhotoPlaceholder = styled.div`
-  width: 120px;
-  height: 120px;
+  width: 200px;
+  height: 200px;
   background: #ffe1f0;
   border: 2.5px dashed #ff69b4;
   border-radius: 18px;
@@ -320,14 +320,14 @@ const TimelineSection = () => {
               src="/footsteps-offset.svg"
               alt="Footsteps"
               style={{
-                width: '200px',
-                height: '200px',
+                width: '54px',
+                height: '54px',
                 objectFit: 'contain',
                 filter: 'drop-shadow(0 0 18px #ff69b4) drop-shadow(0 0 36px #ff0040)',
                 opacity: f.opacity,
                 position: 'absolute',
-                left: `${f.x - 100}px`,
-                top: `${f.y - 100}px`,
+                left: `${f.x - 27}px`,
+                top: `${f.y - 27}px`,
                 pointerEvents: 'none',
                 transform: `rotate(${f.angle}deg)`
               }}
