@@ -18,22 +18,13 @@ const Section = styled.section`
   width: 100vw;
   background: linear-gradient(120deg, #ffe1fa 0%, #ffb6df 60%, #ff8ac6 100%);
   padding: 6rem 0 5rem 0;
-  margin-top: 5rem; /* Robust separation from above */
-  margin-bottom: 5rem; /* Robust separation from below */
-  border-bottom: 1.5px solid #ffd6eb;
-  box-shadow: 0 6px 24px -10px #ffd6eb80;
-  overflow: visible;
+  overflow-x: auto;
+  overflow-y: visible;
   position: relative;
-  z-index: 2;
-
-  /* Scattered soft icons as background */
-  .timeline-bg-emoji {
-    position: absolute;
-    font-size: 3.5rem;
-    opacity: 0.08;
-    pointer-events: none;
-    user-select: none;
-  }
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const Title = styled.h2`
@@ -45,7 +36,7 @@ const Title = styled.h2`
 const TimelineWrapper = styled.div`
   width: 100vw;
   min-height: 475px;
-  padding: 3.5rem 0 4.5rem 0; /* Restore original padding */
+  padding: 3.5rem 0 4.5rem 0;
   display: flex;
   flex-direction: row;
   align-items: center;
