@@ -243,11 +243,28 @@ function useFootstepTrail(eventPositions, footstepsCount = 4, segmentDuration = 
     const offsetAngle = angleRad + (isLeft ? -Math.PI/2 : Math.PI/2);
     const offsetX = Math.cos(offsetAngle) * stepOffset;
     const offsetY = Math.sin(offsetAngle) * stepOffset;
+
+    // --- Realistic opacity transition logic ---
+    // step 0: leading step (in front)
+    // step 1: mid step
+    // step 2: trailing step (oldest)
+    let opacity = 0.3;
+    if (i === 0) {
+      // Leading step: fully dark at start, dims after 60% progress
+      opacity = t < 0.6 ? 1 : 1 - (t - 0.6) / 0.4; // dims from 1 to 0 as t goes 0.6 -> 1
+    } else if (i === 1) {
+      // Second step: starts at 0.5, gets darker as t increases, max at t=0.6
+      opacity = t < 0.3 ? 0.5 : t < 0.6 ? 0.5 + (t - 0.3) / 0.3 * 0.5 : 1;
+    } else if (i === 2) {
+      // Third step: starts dim, gets darker until t=0.3, then stays at 0.5
+      opacity = t < 0.3 ? t / 0.3 * 0.5 : 0.5;
+    }
+
     footstepsArr.push({
       x: base.x + offsetX,
       y: base.y + offsetY,
       angle: angleRad * 180 / Math.PI + 90,
-      opacity: 1 - (i / footstepsCount),
+      opacity,
       isLeft,
       key: `footstep-${segmentIndex}-${i}`,
     });
