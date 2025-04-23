@@ -241,7 +241,7 @@ const TimelineSection = () => {
             position: 'relative',
             zIndex: 3,
             overflowX: 'auto',
-            minHeight: '320px',
+            minHeight: '475px', // Ensure this matches the styled component
             marginBottom: '5rem',
           }}
         >
