@@ -237,7 +237,7 @@ function useFootstepTrail(eventPositions, footstepsCount = 3, speed = 8000) {
       x: pos.x,
       y: pos.y,
       angle: angle + 90, // Rotate so heel is at the back, toe points forward
-      opacity: 1 - (i * 0.33),
+      opacity: 1 - (i / footstepsCount),
       key: `footstep-${i}`,
     });
   }
@@ -312,7 +312,8 @@ const TimelineSection = () => {
   , [uniqueEvents, eventSpacing, timelineY, topOffset, bottomOffset]);
 
   // --- Use the new robust footsteps hook ---
-  const trail = useFootstepTrail(eventPositions, 3, 30000); // 3 footsteps, 30 seconds per loop
+  const footstepsCount = 4; // Show 4 footsteps together
+  const trail = useFootstepTrail(eventPositions, footstepsCount, 30000); // 4 footsteps, 30 seconds per loop
 
   const addEvent = async () => {
     try {
