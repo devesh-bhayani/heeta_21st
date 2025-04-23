@@ -183,65 +183,65 @@ function angleBetween(p1, p2) {
   return Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
 }
 
-// Animation hook for footsteps
-function useFootstepTrail(eventPositions, footstepsCount = 3, speed = 18000) {
-  const [trail, setTrail] = useState([]);
-  const requestRef = useRef();
-  const startRef = useRef(null);
+// --- REPLACE useFootstepTrail with robust version ---
+function useFootstepTrail(eventPositions, footstepsCount = 3, speed = 8000) {
+  const [progress, setProgress] = React.useState(0); // progress from 0 to 1
+  const requestRef = React.useRef();
 
-  useEffect(() => {
-    if (eventPositions.length < 2) return;
-    let active = true;
-    startRef.current = null;
-
-    function animate(ts) {
-      if (!active) return;
-      if (!startRef.current) startRef.current = ts;
-      const elapsed = (ts - startRef.current) % speed;
-      const progress = elapsed / speed;
-      const totalSegments = Math.max(eventPositions.length - 1, 1);
-      const trailSpacing = 0.08;
-      const pathProgress = progress * totalSegments;
-      const footstepsArr = [];
-      for (let i = 0; i < footstepsCount; i++) {
-        let t = Math.max(0, pathProgress - i * trailSpacing);
-        let seg = Math.floor(t);
-        let localT = t - seg;
-        if (seg >= totalSegments) {
-          seg = totalSegments - 1;
-          localT = 1;
-        }
-        const startPt = eventPositions[seg];
-        const endPt = eventPositions[seg + 1];
-        const curve = Math.sin(localT * Math.PI) * 40 * (seg % 2 === 0 ? 1 : -1);
-        const pos = lerpPoint(startPt, endPt, localT);
-        pos.y += curve;
-        let nextT = Math.min(localT + 0.01, 1);
-        let nextPos = lerpPoint(startPt, endPt, nextT);
-        nextPos.y += Math.sin(nextT * Math.PI) * 40 * (seg % 2 === 0 ? 1 : -1);
-        const angle = angleBetween(pos, nextPos);
-        footstepsArr.push({
-          x: pos.x,
-          y: pos.y,
-          angle,
-          opacity: 1 - (i * 0.33),
-          key: `footstep-${i}`,
-        });
-      }
-      setTrail(footstepsArr);
-      // DEBUG: Log the trail for troubleshooting
-      if (footstepsArr.length > 0) {
-        console.log("Footstep animation frame", footstepsArr);
-      }
+  React.useEffect(() => {
+    let lastTime;
+    function animate(time) {
+      if (lastTime === undefined) lastTime = time;
+      const delta = time - lastTime;
+      lastTime = time;
+      setProgress(prev => {
+        let next = prev + delta / speed;
+        if (next > 1) next -= 1;
+        return next;
+      });
       requestRef.current = requestAnimationFrame(animate);
     }
     requestRef.current = requestAnimationFrame(animate);
-    return () => {
-      active = false;
-      if (requestRef.current) cancelAnimationFrame(requestRef.current);
+    return () => cancelAnimationFrame(requestRef.current);
+  }, [speed]);
+
+  if (eventPositions.length < 2) return [];
+
+  const totalSegments = eventPositions.length - 1;
+  const trailSpacing = 0.08;
+  const footstepsArr = [];
+  for (let i = 0; i < footstepsCount; i++) {
+    let t = progress - i * trailSpacing;
+    if (t < 0) t += 1; // wrap around
+    let pathPos = t * totalSegments;
+    let seg = Math.floor(pathPos);
+    let localT = pathPos - seg;
+    if (seg >= totalSegments) {
+      seg = totalSegments - 1;
+      localT = 1;
+    }
+    const startPt = eventPositions[seg];
+    const endPt = eventPositions[seg + 1];
+    const curve = Math.sin(localT * Math.PI) * 40 * (seg % 2 === 0 ? 1 : -1);
+    const pos = {
+      x: startPt.x + (endPt.x - startPt.x) * localT,
+      y: startPt.y + (endPt.y - startPt.y) * localT + curve,
     };
-  }, [eventPositions, footstepsCount, speed]);
-  return trail;
+    let nextT = Math.min(localT + 0.01, 1);
+    let nextPos = {
+      x: startPt.x + (endPt.x - startPt.x) * nextT,
+      y: startPt.y + (endPt.y - startPt.y) * nextT + Math.sin(nextT * Math.PI) * 40 * (seg % 2 === 0 ? 1 : -1),
+    };
+    const angle = Math.atan2(nextPos.y - pos.y, nextPos.x - pos.x) * 180 / Math.PI;
+    footstepsArr.push({
+      x: pos.x,
+      y: pos.y,
+      angle,
+      opacity: 1 - (i * 0.33),
+      key: `footstep-${i}`,
+    });
+  }
+  return footstepsArr;
 }
 
 const TimelineSection = () => {
@@ -301,7 +301,7 @@ const TimelineSection = () => {
   const bottomOffset = 80;
 
   // PATCH: Defensive fallback for eventPositions to always have at least 2 points
-  const eventPositions = useMemo(() =>
+  const eventPositions = React.useMemo(() =>
     uniqueEvents.length < 2
       ? [ { x: 120, y: 120 }, { x: 360, y: 320 } ]
       : uniqueEvents.map((event, idx) => {
@@ -311,7 +311,8 @@ const TimelineSection = () => {
         })
   , [uniqueEvents, eventSpacing, timelineY, topOffset, bottomOffset]);
 
-  const trail = useFootstepTrail(eventPositions, 3, 18000); // 3 footsteps, very slow
+  // --- Use the new robust footsteps hook ---
+  const trail = useFootstepTrail(eventPositions, 3, 8000); // 3 footsteps, 8 seconds per loop
 
   const addEvent = async () => {
     try {
