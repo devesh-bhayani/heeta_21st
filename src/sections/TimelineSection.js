@@ -335,7 +335,6 @@ const TimelineSection = () => {
           ))}
         </div>
         <TimelineLine />
-        <button style={{marginBottom: '2rem', position: 'absolute', left: 20, top: 10, zIndex: 3}} onClick={addEvent}>Add Timeline Event</button>
         {/* Horizontal flex row for events */}
         <div
           style={{
