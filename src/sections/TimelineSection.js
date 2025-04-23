@@ -188,17 +188,19 @@ function useFootstepTrail(eventPositions, footstepsCount = 3, speed = 18000) {
   const [trail, setTrail] = useState([]);
   const requestRef = useRef();
   const startRef = useRef(null);
-  const totalSegments = Math.max(eventPositions.length - 1, 1);
-  const trailSpacing = 0.08; // how far apart footsteps are (in progress units)
+
   useEffect(() => {
     if (eventPositions.length < 2) return;
-    startRef.current = null; // Reset animation start on deps change
+    let active = true;
+    startRef.current = null;
+
     function animate(ts) {
+      if (!active) return;
       if (!startRef.current) startRef.current = ts;
       const elapsed = (ts - startRef.current) % speed;
-      // progress: 0 to 1 over the whole path
       const progress = elapsed / speed;
-      // Where is the head footstep?
+      const totalSegments = Math.max(eventPositions.length - 1, 1);
+      const trailSpacing = 0.08;
       const pathProgress = progress * totalSegments;
       const footstepsArr = [];
       for (let i = 0; i < footstepsCount; i++) {
@@ -211,11 +213,9 @@ function useFootstepTrail(eventPositions, footstepsCount = 3, speed = 18000) {
         }
         const startPt = eventPositions[seg];
         const endPt = eventPositions[seg + 1];
-        // Curved y offset
         const curve = Math.sin(localT * Math.PI) * 40 * (seg % 2 === 0 ? 1 : -1);
         const pos = lerpPoint(startPt, endPt, localT);
         pos.y += curve;
-        // For angle, look slightly ahead
         let nextT = Math.min(localT + 0.01, 1);
         let nextPos = lerpPoint(startPt, endPt, nextT);
         nextPos.y += Math.sin(nextT * Math.PI) * 40 * (seg % 2 === 0 ? 1 : -1);
@@ -225,14 +225,18 @@ function useFootstepTrail(eventPositions, footstepsCount = 3, speed = 18000) {
           y: pos.y,
           angle,
           opacity: 1 - (i * 0.33),
-          key: `footstep-${i}`
+          key: `footstep-${i}`,
         });
       }
       setTrail(footstepsArr);
+      console.log("Footstep animation frame", footstepsArr[0]);
       requestRef.current = requestAnimationFrame(animate);
     }
     requestRef.current = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(requestRef.current);
+    return () => {
+      active = false;
+      if (requestRef.current) cancelAnimationFrame(requestRef.current);
+    };
   }, [eventPositions, footstepsCount, speed]);
   return trail;
 }
