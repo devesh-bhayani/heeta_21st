@@ -208,8 +208,9 @@ function useFootstepTrail(eventPositions, footstepsCount = 3, speed = 8000) {
   if (eventPositions.length < 2) return [];
 
   const totalSegments = eventPositions.length - 1;
-  const trailSpacing = 0.025; // Much closer steps
+  const trailSpacing = 0.012; // Even closer steps
   const footstepsArr = [];
+  const stepOffset = 18; // px offset from the path center
   for (let i = 0; i < footstepsCount; i++) {
     let t = progress - i * trailSpacing;
     if (t < 0) t += 1; // wrap around
@@ -223,7 +224,8 @@ function useFootstepTrail(eventPositions, footstepsCount = 3, speed = 8000) {
     const startPt = eventPositions[seg];
     const endPt = eventPositions[seg + 1];
     const curve = Math.sin(localT * Math.PI) * 40 * (seg % 2 === 0 ? 1 : -1);
-    const pos = {
+    // Path position
+    const base = {
       x: startPt.x + (endPt.x - startPt.x) * localT,
       y: startPt.y + (endPt.y - startPt.y) * localT + curve,
     };
@@ -232,12 +234,18 @@ function useFootstepTrail(eventPositions, footstepsCount = 3, speed = 8000) {
       x: startPt.x + (endPt.x - startPt.x) * nextT,
       y: startPt.y + (endPt.y - startPt.y) * nextT + Math.sin(nextT * Math.PI) * 40 * (seg % 2 === 0 ? 1 : -1),
     };
-    const angle = Math.atan2(nextPos.y - pos.y, nextPos.x - pos.x) * 180 / Math.PI;
+    const angleRad = Math.atan2(nextPos.y - base.y, nextPos.x - base.x);
+    // Alternate left/right offset for each step, like real walking
+    const isLeft = i % 2 === 0;
+    const offsetAngle = angleRad + (isLeft ? -Math.PI/2 : Math.PI/2);
+    const offsetX = Math.cos(offsetAngle) * stepOffset;
+    const offsetY = Math.sin(offsetAngle) * stepOffset;
     footstepsArr.push({
-      x: pos.x,
-      y: pos.y,
-      angle: angle + 90, // Rotate so heel is at the back, toe points forward
+      x: base.x + offsetX,
+      y: base.y + offsetY,
+      angle: angleRad * 180 / Math.PI + 90, // Heel at back, toe forward
       opacity: 1 - (i / footstepsCount),
+      isLeft,
       key: `footstep-${i}`,
     });
   }
@@ -313,7 +321,7 @@ const TimelineSection = () => {
 
   // --- Use the new robust footsteps hook ---
   const footstepsCount = 4; // Show 4 footsteps together
-  const trail = useFootstepTrail(eventPositions, footstepsCount, 60000); // 4 footsteps, 60 seconds per loop (slower)
+  const trail = useFootstepTrail(eventPositions, footstepsCount, 90000); // 4 footsteps, 90 seconds per loop (very slow)
 
   const addEvent = async () => {
     try {
@@ -368,16 +376,17 @@ const TimelineSection = () => {
               src={"/footsteps-offset.svg"}
               alt="Footsteps"
               style={{
-                width: '54px',
-                height: '54px',
+                width: '34px', // Smaller footsteps
+                height: '34px',
                 objectFit: 'contain',
-                filter: 'drop-shadow(0 0 18px #ff69b4) drop-shadow(0 0 36px #ff0040)',
+                filter: 'drop-shadow(0 0 12px #ff69b4) drop-shadow(0 0 22px #ff0040)',
                 opacity: f.opacity,
                 position: 'absolute',
-                left: `${f.x - 27}px`,
-                top: `${f.y - 27}px`,
+                left: `${f.x - 17}px`,
+                top: `${f.y - 17}px`,
                 pointerEvents: 'none',
-                transform: `rotate(${f.angle}deg)`
+                transform: `rotate(${f.angle}deg)`,
+                zIndex: 5,
               }}
               onError={e => { e.target.onerror = null; e.target.src = 'https://upload.wikimedia.org/wikipedia/commons/8/84/Example.svg'; }}
             />
