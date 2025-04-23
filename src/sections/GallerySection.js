@@ -1,15 +1,22 @@
 import styled from 'styled-components';
 
+/**
+ * Gallery Section Container
+ * 
+ * A styled section component with a gradient background, 
+ * subtle camera and sparkle emojis, and a robust separation 
+ * from above and below sections.
+ */
 const Section = styled.section`
   min-height: 90vh;
   width: 100vw;
   background: linear-gradient(135deg, #ffb6df 0%, #ff90c2 100%);
-  padding: 5rem 0 4rem 0;
-  margin-top: 4rem;
-  margin-bottom: 4rem;
+  padding: 6rem 0 5rem 0;
+  margin-top: 5rem; /* Robust separation from above */
+  margin-bottom: 5rem; /* Robust separation from below */
   border-bottom: 1.5px solid #ffd6eb;
   box-shadow: 0 6px 24px -10px #ffd6eb80;
-  overflow: hidden;
+  overflow: visible;
   position: relative;
 
   /* Subtle camera and sparkle emojis */
@@ -33,11 +40,21 @@ const Section = styled.section`
   }
 `;
 
+/**
+ * Gallery Title
+ * 
+ * A centered title component.
+ */
 const Title = styled.h2`
   text-align: center;
   margin-bottom: 2rem;
 `;
 
+/**
+ * Gallery Grid Container
+ * 
+ * A grid container for displaying gallery images.
+ */
 const GalleryGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -45,6 +62,11 @@ const GalleryGrid = styled.div`
   padding: 1rem 2rem;
 `;
 
+/**
+ * Gallery Image
+ * 
+ * A styled image component with a hover effect.
+ */
 const GalleryImage = styled.img`
   width: 100%;
   border-radius: 10px;
@@ -67,6 +89,11 @@ const images = [
   '/images/sample6.jpg',
 ];
 
+/**
+ * Gallery Section
+ * 
+ * A section component that displays a photo gallery.
+ */
 const GallerySection = () => (
   <Section id="gallery">
     <Title>Photo Gallery</Title>

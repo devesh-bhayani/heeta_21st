@@ -14,15 +14,15 @@ import {
 import { createGlobalStyle } from 'styled-components';
 
 const Section = styled.section`
-  min-height: 75vh;
+  min-height: 90vh;
   width: 100vw;
   background: linear-gradient(120deg, #ffe1fa 0%, #ffb6df 60%, #ff8ac6 100%);
-  padding: 5rem 0 4rem 0;
-  margin-top: 4rem;
-  margin-bottom: 4rem;
+  padding: 6rem 0 5rem 0;
+  margin-top: 5rem; /* Robust separation from above */
+  margin-bottom: 5rem; /* Robust separation from below */
   border-bottom: 1.5px solid #ffd6eb;
   box-shadow: 0 6px 24px -10px #ffd6eb80;
-  overflow: hidden;
+  overflow: visible;
   position: relative;
   z-index: 2;
 
