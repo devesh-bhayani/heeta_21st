@@ -45,13 +45,12 @@ const Title = styled.h2`
 const TimelineWrapper = styled.div`
   width: 100vw;
   min-height: 520px;
-  padding: 3.5rem 0 4.5rem 0;
+  padding: 5.5rem 0 6.5rem 0; /* Increased top and bottom padding for extra space */
   display: flex;
   flex-direction: row;
   align-items: center;
   position: relative;
   overflow-x: auto;
-  overflow-y: visible;
   background: transparent;
   scroll-snap-type: x mandatory;
   z-index: 2;
@@ -83,6 +82,8 @@ const TimelineEvent = styled.div`
   align-items: center;
   scroll-snap-align: center;
   z-index: 2;
+  margin-top: 2.5rem; /* Extra space above event */
+  margin-bottom: 2.5rem; /* Extra space below event */
   top: ${({align}) => align === 'top' ? '-80px' : '80px'};
   transition: top 0.3s;
 `;
