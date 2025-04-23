@@ -169,6 +169,73 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
+// Helper to interpolate between two points
+function lerp(a, b, t) {
+  return a + (b - a) * t;
+}
+function lerpPoint(p1, p2, t) {
+  return {
+    x: lerp(p1.x, p2.x, t),
+    y: lerp(p1.y, p2.y, t)
+  };
+}
+function angleBetween(p1, p2) {
+  return Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
+}
+
+// Animation hook for footsteps
+function useFootstepTrail(eventPositions, footstepsCount = 3, speed = 18000) {
+  const [trail, setTrail] = useState([]);
+  const requestRef = useRef();
+  const totalSegments = Math.max(eventPositions.length - 1, 1);
+  const trailSpacing = 0.08; // how far apart footsteps are (in progress units)
+  useEffect(() => {
+    if (eventPositions.length < 2) return;
+    let start = null;
+    function animate(ts) {
+      if (!start) start = ts;
+      const elapsed = (ts - start) % speed;
+      // progress: 0 to 1 over the whole path
+      const progress = elapsed / speed;
+      // Where is the head footstep?
+      const pathProgress = progress * totalSegments;
+      const footstepsArr = [];
+      for (let i = 0; i < footstepsCount; i++) {
+        let t = Math.max(0, pathProgress - i * trailSpacing);
+        let seg = Math.floor(t);
+        let localT = t - seg;
+        if (seg >= totalSegments) {
+          seg = totalSegments - 1;
+          localT = 1;
+        }
+        const startPt = eventPositions[seg];
+        const endPt = eventPositions[seg + 1];
+        // Curved y offset
+        const curve = Math.sin(localT * Math.PI) * 40 * (seg % 2 === 0 ? 1 : -1);
+        const pos = lerpPoint(startPt, endPt, localT);
+        pos.y += curve;
+        // For angle, look slightly ahead
+        let nextT = Math.min(localT + 0.01, 1);
+        let nextPos = lerpPoint(startPt, endPt, nextT);
+        nextPos.y += Math.sin(nextT * Math.PI) * 40 * (seg % 2 === 0 ? 1 : -1);
+        const angle = angleBetween(pos, nextPos);
+        footstepsArr.push({
+          x: pos.x,
+          y: pos.y,
+          angle,
+          opacity: 1 - (i * 0.33),
+          key: `footstep-${i}`
+        });
+      }
+      setTrail(footstepsArr);
+      requestRef.current = requestAnimationFrame(animate);
+    }
+    requestRef.current = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(requestRef.current);
+  }, [eventPositions, footstepsCount, speed]);
+  return trail;
+}
+
 const TimelineSection = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -213,20 +280,7 @@ const TimelineSection = () => {
     return { x, y };
   });
 
-  // For footsteps: calculate midpoints between each event
-  const footsteps = [];
-  for (let i = 0; i < eventPositions.length - 1; i++) {
-    const start = eventPositions[i];
-    const end = eventPositions[i+1];
-    // Place 3 footsteps per segment, spaced along curve
-    for (let j = 1; j <= 3; j++) {
-      const t = j / 4;
-      const curve = Math.sin(t * Math.PI) * 40 * (i%2===0?1:-1);
-      const x = start.x + (end.x - start.x) * t;
-      const y = start.y + (end.y - start.y) * t + curve;
-      footsteps.push({x, y, key: `${i}-${j}`});
-    }
-  }
+  const trail = useFootstepTrail(eventPositions, 3, 18000); // 3 footsteps, very slow
 
   const addEvent = async () => {
     try {
@@ -259,7 +313,7 @@ const TimelineSection = () => {
           zIndex: 4,
           overflow: 'visible',
         }}>
-          {footsteps.map(f => (
+          {trail.map((f, idx) => (
             <img
               key={f.key}
               src="/footsteps-offset.svg"
@@ -269,12 +323,12 @@ const TimelineSection = () => {
                 height: '54px',
                 objectFit: 'contain',
                 filter: 'drop-shadow(0 0 18px #ff69b4) drop-shadow(0 0 36px #ff0040)',
-                opacity: 0.85,
+                opacity: f.opacity,
                 position: 'absolute',
                 left: `${f.x - 27}px`,
                 top: `${f.y - 27}px`,
                 pointerEvents: 'none',
-                transition: 'left 0.2s linear, top 0.2s linear',
+                transform: `rotate(${f.angle}deg)`
               }}
             />
           ))}
