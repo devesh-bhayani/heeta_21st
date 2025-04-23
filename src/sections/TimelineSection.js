@@ -222,11 +222,12 @@ function useFootstepTrail(eventPositions, footstepsCount = 4, segmentDuration = 
   const startPt = eventPositions[segmentIndex];
   const endPt = eventPositions[segmentIndex + 1];
   const totalSegments = eventPositions.length - 1;
+  const repeatCount = 3;
+  const effectiveProgress = (segmentProgress * repeatCount) % 1;
   const trailSpacing = 0.09; // More space between steps
-  const stepOffset = 18; // px offset from the path center
   const footstepsArr = [];
   for (let i = 0; i < footstepsCount; i++) {
-    let t = Math.max(0, segmentProgress - i * trailSpacing);
+    let t = Math.max(0, effectiveProgress - i * trailSpacing);
     t = Math.max(0, Math.min(t, 1));
     const curve = Math.sin(t * Math.PI) * 40 * (segmentIndex % 2 === 0 ? 1 : -1);
     const base = {
@@ -241,22 +242,16 @@ function useFootstepTrail(eventPositions, footstepsCount = 4, segmentDuration = 
     const angleRad = Math.atan2(nextPos.y - base.y, nextPos.x - base.x);
     const isLeft = i % 2 === 0;
     const offsetAngle = angleRad + (isLeft ? -Math.PI/2 : Math.PI/2);
-    const offsetX = Math.cos(offsetAngle) * stepOffset;
-    const offsetY = Math.sin(offsetAngle) * stepOffset;
+    const offsetX = Math.cos(offsetAngle) * 18;
+    const offsetY = Math.sin(offsetAngle) * 18;
 
     // --- Realistic opacity transition logic ---
-    // step 0: leading step (in front)
-    // step 1: mid step
-    // step 2: trailing step (oldest)
     let opacity = 0.3;
     if (i === 0) {
-      // Leading step: fully dark at start, dims after 60% progress
-      opacity = t < 0.6 ? 1 : 1 - (t - 0.6) / 0.4; // dims from 1 to 0 as t goes 0.6 -> 1
+      opacity = t < 0.6 ? 1 : 1 - (t - 0.6) / 0.4;
     } else if (i === 1) {
-      // Second step: starts at 0.5, gets darker as t increases, max at t=0.6
       opacity = t < 0.3 ? 0.5 : t < 0.6 ? 0.5 + (t - 0.3) / 0.3 * 0.5 : 1;
     } else if (i === 2) {
-      // Third step: starts dim, gets darker until t=0.3, then stays at 0.5
       opacity = t < 0.3 ? t / 0.3 * 0.5 : 0.5;
     }
 
@@ -341,7 +336,7 @@ const TimelineSection = () => {
 
   // --- Use the new robust footsteps hook ---
   const footstepsCount = 3; // Show 3 footsteps together
-  const trail = useFootstepTrail(eventPositions, footstepsCount, 8000, 2400); // 8s per segment (double previous), 2.4s pause
+  const trail = useFootstepTrail(eventPositions, footstepsCount, 18000, 2600); // 18s per segment, 2.6s pause (slower)
 
   const addEvent = async () => {
     try {
@@ -396,14 +391,14 @@ const TimelineSection = () => {
               src={"/footsteps-offset.svg"}
               alt="Footsteps"
               style={{
-                width: '34px', // Smaller footsteps
-                height: '34px',
+                width: '17px', // Half the previous size
+                height: '17px',
                 objectFit: 'contain',
                 filter: 'drop-shadow(0 0 12px #ff69b4) drop-shadow(0 0 22px #ff0040)',
                 opacity: f.opacity,
                 position: 'absolute',
-                left: `${f.x - 17}px`,
-                top: `${f.y - 17}px`,
+                left: `${f.x - 8.5}px`,
+                top: `${f.y - 8.5}px`,
                 pointerEvents: 'none',
                 transform: `rotate(${f.angle}deg)`,
                 zIndex: 5,
