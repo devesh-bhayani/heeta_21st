@@ -15,12 +15,11 @@ const Section = styled.section`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 2000;
+  position: relative;
+  z-index: 1;
   overflow: hidden;
   box-sizing: border-box;
+  scroll-snap-align: start;
 `;
 
 const AnimatedBg = styled.div`
@@ -128,39 +127,11 @@ const Video = styled.video`
 
 export default function LandingSection() {
   const [showVideo, setShowVideo] = useState(false);
-  const [hideLanding, setHideLanding] = useState(false);
-
-  // Check sessionStorage only on client after mount to avoid hydration errors
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const stored = sessionStorage.getItem('hideLanding') === 'true';
-      if (stored) setHideLanding(true);
-    }
-  }, []);
-
-  const handlePlay = () => {
-    setShowVideo(true);
-    setHideLanding(true);
-    if (typeof window !== 'undefined') sessionStorage.setItem('hideLanding', 'true');
-  };
+  const handlePlay = () => setShowVideo(true);
   const handleClose = () => setShowVideo(false);
 
-  // Hide landing page after scroll (and persist)
-  useEffect(() => {
-    const onScroll = () => {
-      if (window.scrollY > window.innerHeight * 0.3) {
-        setHideLanding(true);
-        sessionStorage.setItem('hideLanding', 'true');
-      }
-    };
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
-  if (hideLanding) return null;
-
   return (
-    <Section id="landing">
+    <Section id="landing" style={{ scrollSnapAlign: 'start' }}>
       <AnimatedBg>
         <span role="img" aria-label="cake">🎂</span>
         <span role="img" aria-label="party">🎉</span>
@@ -176,7 +147,7 @@ export default function LandingSection() {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        position: 'fixed',
+        position: 'absolute',
         top: 0,
         left: 0,
         zIndex: 2,

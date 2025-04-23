@@ -10,10 +10,18 @@ export default function Home() {
     <>
       <NavBar />
       <LandingSection />
-      <div style={{ paddingTop: '60px', minHeight: '100vh', boxSizing: 'border-box', width: '100vw', overflow: 'hidden', background: 'linear-gradient(135deg, #fffbe8 0%, #ffe1fa 100%)', display: 'block', position: 'relative' }}>
-        <TimelineSection />
-        <GallerySection />
+      <div id="timeline-anchor" style={{
+        minHeight: '100vh',
+        boxSizing: 'border-box',
+        width: '100vw',
+        overflow: 'hidden',
+        background: 'linear-gradient(135deg, #fffbe8 0%, #ffe1fa 100%)',
+        display: 'block',
+        position: 'relative'
+      }}>
         <LoveLetterSection />
+        <GallerySection />
+        <TimelineSection />
       </div>
     </>
   );
