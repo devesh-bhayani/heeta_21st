@@ -169,6 +169,37 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
+const useFootstepsAnimation = (eventPositions) => {
+  const [footstep, setFootstep] = useState({x: 0, y: 0, idx: 0});
+  const requestRef = useRef();
+  const duration = 9000; // ms for full journey (slower)
+  const [startTime, setStartTime] = useState(null);
+
+  useEffect(() => {
+    if (!eventPositions.length) return;
+    let animationFrame;
+    const animate = (timestamp) => {
+      if (!startTime) setStartTime(timestamp);
+      const elapsed = (timestamp - (startTime || timestamp)) % duration;
+      const progress = elapsed / duration;
+      const totalSegments = eventPositions.length - 1;
+      const segment = Math.floor(progress * totalSegments);
+      const segProgress = (progress * totalSegments) - segment;
+      const start = eventPositions[segment];
+      const end = eventPositions[(segment+1)%eventPositions.length];
+      // Curved path: interpolate x,y and add a curve offset
+      const curve = Math.sin(segProgress * Math.PI) * 40 * (segment%2===0?1:-1);
+      const x = start.x + (end.x - start.x) * segProgress;
+      const y = start.y + (end.y - start.y) * segProgress + curve;
+      setFootstep({x, y, idx: segment});
+      animationFrame = requestAnimationFrame(animate);
+    };
+    animationFrame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationFrame);
+  }, [eventPositions, startTime]);
+  return footstep;
+};
+
 const TimelineSection = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -213,6 +244,8 @@ const TimelineSection = () => {
     return { x, y };
   });
 
+  const footstep = useFootstepsAnimation(eventPositions);
+
   const addEvent = async () => {
     try {
       const year = prompt("Enter year:");
@@ -237,28 +270,31 @@ const TimelineSection = () => {
         <div style={{
           position: 'absolute',
           left: 0,
-          top: 'calc(50% - 40px)', // Center footsteps on timeline line
+          top: 0,
           width: '100%',
-          height: '80px', // Height for footsteps
+          height: '100%',
           pointerEvents: 'none',
           zIndex: 4,
           overflow: 'visible',
         }}>
-          <img
-            src="/footsteps-offset.svg"
-            alt="Footsteps animation"
-            style={{
-              width: '300px', // Adjust size to match screenshot
-              height: '80px',
-              objectFit: 'contain',
-              filter: 'drop-shadow(0 0 18px #ff69b4) drop-shadow(0 0 36px #ff0040)',
-              opacity: 0.7,
-              position: 'absolute',
-              left: 0,
-              top: 0,
-              animation: 'footstepsWalk 5s linear infinite',
-            }}
-          />
+          {eventPositions.length > 1 && (
+            <img
+              src="/footsteps-offset.svg"
+              alt="Footsteps animation"
+              style={{
+                width: '60px',
+                height: '60px',
+                objectFit: 'contain',
+                filter: 'drop-shadow(0 0 18px #ff69b4) drop-shadow(0 0 36px #ff0040)',
+                opacity: 0.85,
+                position: 'absolute',
+                left: `${footstep.x - 30}px`,
+                top: `${footstep.y - 30}px`,
+                transition: 'left 0.15s linear, top 0.15s linear',
+                pointerEvents: 'none',
+              }}
+            />
+          )}
         </div>
         <TimelineLine />
         <button style={{marginBottom: '2rem', position: 'absolute', left: 20, top: 10, zIndex: 3}} onClick={addEvent}>Add Timeline Event</button>
