@@ -222,7 +222,7 @@ function useFootstepTrail(eventPositions, footstepsCount = 4, segmentDuration = 
   const startPt = eventPositions[segmentIndex];
   const endPt = eventPositions[segmentIndex + 1];
   const totalSegments = eventPositions.length - 1;
-  const trailSpacing = 0.18; // More space between steps
+  const trailSpacing = 0.09; // More space between steps
   const stepOffset = 18; // px offset from the path center
   const footstepsArr = [];
   for (let i = 0; i < footstepsCount; i++) {
@@ -323,8 +323,8 @@ const TimelineSection = () => {
   , [uniqueEvents, eventSpacing, timelineY, topOffset, bottomOffset]);
 
   // --- Use the new robust footsteps hook ---
-  const footstepsCount = 4; // Show 4 footsteps together
-  const trail = useFootstepTrail(eventPositions, footstepsCount, 4000, 1200); // 4 footsteps, 4s per segment, 1.2s pause at each block
+  const footstepsCount = 3; // Show 3 footsteps together
+  const trail = useFootstepTrail(eventPositions, footstepsCount, 8000, 2400); // 8s per segment (double previous), 2.4s pause
 
   const addEvent = async () => {
     try {
