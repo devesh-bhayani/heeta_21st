@@ -222,7 +222,7 @@ function useFootstepTrail(eventPositions, footstepsCount = 4, segmentDuration = 
   const startPt = eventPositions[segmentIndex];
   const endPt = eventPositions[segmentIndex + 1];
   const totalSegments = eventPositions.length - 1;
-  const trailSpacing = 0.012;
+  const trailSpacing = 0.18; // More space between steps
   const stepOffset = 18; // px offset from the path center
   const footstepsArr = [];
   for (let i = 0; i < footstepsCount; i++) {
