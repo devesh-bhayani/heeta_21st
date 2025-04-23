@@ -184,7 +184,7 @@ function angleBetween(p1, p2) {
 }
 
 // --- Repeat footsteps animation 3 times between each pair of blocks, for all segments ---
-function useFootstepTrail(eventPositions, footstepsCount = 3, segmentDuration = 18000, pauseDuration = 2600) {
+function useFootstepTrail(eventPositions, footstepsCount = 6, segmentDuration = 18000, pauseDuration = 2600) {
   const [progress, setProgress] = React.useState(0); // 0 to 1 over all segments
   const [paused, setPaused] = React.useState(false);
   const requestRef = React.useRef();
@@ -251,14 +251,20 @@ function useFootstepTrail(eventPositions, footstepsCount = 3, segmentDuration = 
     const offsetX = Math.cos(offsetAngle) * stepOffset;
     const offsetY = Math.sin(offsetAngle) * stepOffset;
 
-    // Realistic opacity transition logic
-    let opacity = 0.3;
+    // Adjusted opacity transition for 6 steps
+    let opacity = 0.2;
     if (i === 0) {
-      opacity = t < 0.6 ? 1 : 1 - (t - 0.6) / 0.4;
+      opacity = t < 0.6 ? 1 : 1 - (t - 0.6) / 0.4; // fades out at end
     } else if (i === 1) {
-      opacity = t < 0.3 ? 0.5 : t < 0.6 ? 0.5 + (t - 0.3) / 0.3 * 0.5 : 1;
+      opacity = t < 0.3 ? 0.7 : t < 0.6 ? 0.7 + (t - 0.3) / 0.3 * 0.3 : 1;
     } else if (i === 2) {
-      opacity = t < 0.3 ? t / 0.3 * 0.5 : 0.5;
+      opacity = t < 0.2 ? 0.5 : t < 0.5 ? 0.5 + (t - 0.2) / 0.3 * 0.5 : 1;
+    } else if (i === 3) {
+      opacity = t < 0.1 ? 0.3 : t < 0.3 ? 0.3 + (t - 0.1) / 0.2 * 0.5 : 0.8;
+    } else if (i === 4) {
+      opacity = t < 0.05 ? 0.1 : t < 0.2 ? 0.1 + (t - 0.05) / 0.15 * 0.4 : 0.5;
+    } else if (i === 5) {
+      opacity = t < 0.03 ? 0.05 : t < 0.1 ? 0.05 + (t - 0.03) / 0.07 * 0.15 : 0.2;
     }
 
     footstepsArr.push({
@@ -341,7 +347,7 @@ const TimelineSection = () => {
   , [uniqueEvents, eventSpacing, timelineY, topOffset, bottomOffset]);
 
   // --- Use the new robust footsteps hook ---
-  const footstepsCount = 3; // Show 3 footsteps together
+  const footstepsCount = 6; // Show 6 footsteps together
   const trail = useFootstepTrail(eventPositions, footstepsCount, 18000, 2600); // 18s per segment, 2.6s pause (slower)
 
   const addEvent = async () => {
