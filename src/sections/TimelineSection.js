@@ -236,7 +236,7 @@ function useFootstepTrail(eventPositions, footstepsCount = 3, speed = 8000) {
     footstepsArr.push({
       x: pos.x,
       y: pos.y,
-      angle,
+      angle: angle + 90, // Rotate so heel is at the back, toe points forward
       opacity: 1 - (i * 0.33),
       key: `footstep-${i}`,
     });
