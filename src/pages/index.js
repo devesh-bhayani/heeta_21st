@@ -6,9 +6,9 @@ import LoveLetterSection from '../sections/LoveLetterSection';
 
 export default function Home() {
   return (
-    <main style={{ minHeight: '100vh', width: '100vw', overflowX: 'hidden', background: 'linear-gradient(135deg, #fffbe8 0%, #ffe1fa 100%)', display: 'block', position: 'relative' }}>
+    <main style={{ minHeight: '100vh', width: '100vw', overflow: 'hidden', background: 'linear-gradient(135deg, #fffbe8 0%, #ffe1fa 100%)', display: 'block', position: 'relative' }}>
       <NavBar />
-      <div style={{ height: '96px', width: '100%' }} />
+      {/* Remove spacer div for navbar, let landing section start at top */}
       <LandingSection />
       <TimelineSection />
       <GallerySection />
