@@ -169,37 +169,6 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const useFootstepsAnimation = (eventPositions) => {
-  const [footstep, setFootstep] = useState({x: 0, y: 0, idx: 0});
-  const requestRef = useRef();
-  const duration = 9000; // ms for full journey (slower)
-  const [startTime, setStartTime] = useState(null);
-
-  useEffect(() => {
-    if (!eventPositions.length) return;
-    let animationFrame;
-    const animate = (timestamp) => {
-      if (!startTime) setStartTime(timestamp);
-      const elapsed = (timestamp - (startTime || timestamp)) % duration;
-      const progress = elapsed / duration;
-      const totalSegments = eventPositions.length - 1;
-      const segment = Math.floor(progress * totalSegments);
-      const segProgress = (progress * totalSegments) - segment;
-      const start = eventPositions[segment];
-      const end = eventPositions[(segment+1)%eventPositions.length];
-      // Curved path: interpolate x,y and add a curve offset
-      const curve = Math.sin(segProgress * Math.PI) * 40 * (segment%2===0?1:-1);
-      const x = start.x + (end.x - start.x) * segProgress;
-      const y = start.y + (end.y - start.y) * segProgress + curve;
-      setFootstep({x, y, idx: segment});
-      animationFrame = requestAnimationFrame(animate);
-    };
-    animationFrame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationFrame);
-  }, [eventPositions, startTime]);
-  return footstep;
-};
-
 const TimelineSection = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -244,7 +213,20 @@ const TimelineSection = () => {
     return { x, y };
   });
 
-  const footstep = useFootstepsAnimation(eventPositions);
+  // For footsteps: calculate midpoints between each event
+  const footsteps = [];
+  for (let i = 0; i < eventPositions.length - 1; i++) {
+    const start = eventPositions[i];
+    const end = eventPositions[i+1];
+    // Place 3 footsteps per segment, spaced along curve
+    for (let j = 1; j <= 3; j++) {
+      const t = j / 4;
+      const curve = Math.sin(t * Math.PI) * 40 * (i%2===0?1:-1);
+      const x = start.x + (end.x - start.x) * t;
+      const y = start.y + (end.y - start.y) * t + curve;
+      footsteps.push({x, y, key: `${i}-${j}`});
+    }
+  }
 
   const addEvent = async () => {
     try {
@@ -277,24 +259,25 @@ const TimelineSection = () => {
           zIndex: 4,
           overflow: 'visible',
         }}>
-          {eventPositions.length > 1 && (
+          {footsteps.map(f => (
             <img
+              key={f.key}
               src="/footsteps-offset.svg"
-              alt="Footsteps animation"
+              alt="Footsteps"
               style={{
-                width: '60px',
-                height: '60px',
+                width: '54px',
+                height: '54px',
                 objectFit: 'contain',
                 filter: 'drop-shadow(0 0 18px #ff69b4) drop-shadow(0 0 36px #ff0040)',
                 opacity: 0.85,
                 position: 'absolute',
-                left: `${footstep.x - 30}px`,
-                top: `${footstep.y - 30}px`,
-                transition: 'left 0.15s linear, top 0.15s linear',
+                left: `${f.x - 27}px`,
+                top: `${f.y - 27}px`,
                 pointerEvents: 'none',
+                transition: 'left 0.2s linear, top 0.2s linear',
               }}
             />
-          )}
+          ))}
         </div>
         <TimelineLine />
         <button style={{marginBottom: '2rem', position: 'absolute', left: 20, top: 10, zIndex: 3}} onClick={addEvent}>Add Timeline Event</button>
