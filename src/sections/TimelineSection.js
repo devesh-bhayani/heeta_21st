@@ -306,27 +306,49 @@ const TimelineSection = () => {
       <TimelineWrapper ref={wrapperRef}>
         {/* Decorative Animated Journey Path */}
         <AnimatedJourneySvg width="100%" height="100%">
-          {/* Decorative Animated Hearts randomly placed around the timeline section */}
-          {Array.from({length: 8}).map((_, i) => {
-            // Random positions for hearts (top 10%-70%, left 10%-90%)
-            const top = Math.random() * 60 + 10;
-            const left = Math.random() * 80 + 10;
-            const duration = Math.random() * 2 + 3.5; // 3.5s - 5.5s
-            return (
-              <AnimatedHeart
-                key={i}
-                x={left + '%'}
-                y={top + '%'}
-                style={{
-                  position: 'absolute',
-                  left: left + '%',
-                  top: top + '%',
-                  transition: 'none',
-                  animationDuration: duration + 's',
-                }}
-              >💗</AnimatedHeart>
-            );
-          })}
+          {/* Decorative Animated Hearts: 2 in center, rest at sides */}
+          {/* 2 hearts near center area */}
+          <AnimatedHeart
+            x="48%"
+            y="30%"
+            style={{position: 'absolute', left: '48%', top: '30%', transition: 'none', animationDuration: '4.2s'}}
+          >💗</AnimatedHeart>
+          <AnimatedHeart
+            x="53%"
+            y="60%"
+            style={{position: 'absolute', left: '53%', top: '60%', transition: 'none', animationDuration: '4.8s'}}
+          >💗</AnimatedHeart>
+          {/* 6 hearts at left/right sides */}
+          <AnimatedHeart
+            x="8%"
+            y="15%"
+            style={{position: 'absolute', left: '8%', top: '15%', transition: 'none', animationDuration: '3.8s'}}
+          >💗</AnimatedHeart>
+          <AnimatedHeart
+            x="14%"
+            y="70%"
+            style={{position: 'absolute', left: '14%', top: '70%', transition: 'none', animationDuration: '4.1s'}}
+          >💗</AnimatedHeart>
+          <AnimatedHeart
+            x="87%"
+            y="22%"
+            style={{position: 'absolute', left: '87%', top: '22%', transition: 'none', animationDuration: '4.5s'}}
+          >💗</AnimatedHeart>
+          <AnimatedHeart
+            x="91%"
+            y="64%"
+            style={{position: 'absolute', left: '91%', top: '64%', transition: 'none', animationDuration: '3.9s'}}
+          >💗</AnimatedHeart>
+          <AnimatedHeart
+            x="6%"
+            y="48%"
+            style={{position: 'absolute', left: '6%', top: '48%', transition: 'none', animationDuration: '5.1s'}}
+          >💗</AnimatedHeart>
+          <AnimatedHeart
+            x="95%"
+            y="42%"
+            style={{position: 'absolute', left: '95%', top: '42%', transition: 'none', animationDuration: '4.3s'}}
+          >💗</AnimatedHeart>
         </AnimatedJourneySvg>
         <TimelineLine />
         {/* Horizontal flex row for events */}

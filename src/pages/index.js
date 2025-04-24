@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import NavBar from '../components/NavBar';
 import LandingSection from '../sections/LandingSection';
 import TimelineSection from '../sections/TimelineSection';
 import GallerySection from '../sections/GallerySection';
 import LoveLetterSection from '../sections/LoveLetterSection';
+import NavBar from '../components/NavBar';
 
 // Ensure main container has padding-top to prevent overlap with fixed navbar
 function ScrollToTopOnLoad() {
