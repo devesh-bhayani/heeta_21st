@@ -96,14 +96,17 @@ const GalleryImage = styled.img`
  * 1. Place your images in the `public/gallery/` folder.
  * 2. Name them sequentially, e.g., photo1.jpg, photo2.jpg, ...
  * 3. Supported formats: .jpg, .jpeg, .png, .webp
- * 4. Images will be loaded automatically in the order of their names.
+ * 4. Add filenames below, and images will be loaded automatically in the order of their names.
  */
 
-function importAll(r) {
-  return r.keys().map(r);
-}
-
-const images = importAll(require.context('../../public/gallery', false, /\.(jpg|jpeg|png|webp)$/));
+// List your gallery images here
+const imageFilenames = [
+  'photo1.jpg',
+  'photo2.jpg',
+  'photo3.jpg',
+  // Add more as needed
+];
+const images = imageFilenames.map(name => `/gallery/${name}`);
 
 /**
  * Gallery Section
@@ -116,7 +119,7 @@ function GallerySection() {
       <Title>Photo Gallery</Title>
       <GalleryGrid>
         {images.map((img, idx) => (
-          <GalleryImage key={idx} src={img.default || img} alt={`Photo ${idx + 1}`} />
+          <GalleryImage key={idx} src={img} alt={`Photo ${idx + 1}`} />
         ))}
       </GalleryGrid>
     </Section>
