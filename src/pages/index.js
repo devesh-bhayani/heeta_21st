@@ -14,17 +14,16 @@ function ScrollToTopOnLoad() {
 }
 
 export default function Home() {
-  const [activeSection, setActiveSection] = useState('landing');
-
   // Scroll handler for navbar links
   function handleNavClick(sectionId) {
-    setActiveSection(sectionId);
     const el = document.getElementById(sectionId);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
     }
   }
 
+  // Always render all sections in order, but add a large vertical spacer between each section to prevent overlap
+  // Add scroll-snap for smooth navigation
   return (
     <>
       <ScrollToTopOnLoad />
@@ -34,11 +33,15 @@ export default function Home() {
         minHeight: '100vh',
         background: 'linear-gradient(120deg, #ffe1fa 0%, #ffd6eb 55%, #fffbe8 100%)',
         overflowX: 'hidden',
+        scrollSnapType: 'y mandatory',
       }}>
-        {activeSection === 'landing' && <LandingSection />}
-        {activeSection === 'love-letter' && <LoveLetterSection />}
-        {activeSection === 'gallery' && <GallerySection />}
-        {activeSection === 'timeline' && <TimelineSection />}
+        <div style={{scrollSnapAlign: 'start'}}><LandingSection /></div>
+        <div style={{height: '7vh'}} />
+        <div style={{scrollSnapAlign: 'start'}}><TimelineSection /></div>
+        <div style={{height: '7vh'}} />
+        <div style={{scrollSnapAlign: 'start'}}><GallerySection /></div>
+        <div style={{height: '7vh'}} />
+        <div style={{scrollSnapAlign: 'start'}}><LoveLetterSection /></div>
       </div>
     </>
   );

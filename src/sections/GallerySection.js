@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
+import { galleryImages } from './galleryImages';
 
 /**
  * Gallery Section Container
@@ -100,13 +101,7 @@ const GalleryImage = styled.img`
  */
 
 // List your gallery images here
-const imageFilenames = [
-  'photo1.jpg',
-  'photo2.jpg',
-  'photo3.jpg',
-  // Add more as needed
-];
-const images = imageFilenames.map(name => `/gallery/${name}`);
+const images = galleryImages.map(name => `/gallery/${name}`);
 
 /**
  * Gallery Section

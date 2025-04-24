@@ -26,6 +26,7 @@ const Section = styled.section`
   scroll-snap-align: start;
   position: relative;
   box-sizing: border-box;
+  background: linear-gradient(120deg, #ffe1fa 0%, #ffd6eb 55%, #fffbe8 100%);
 `;
 
 const Title = styled.h2`
@@ -40,7 +41,7 @@ const TimelineWrapper = styled.div`
   padding: 3.5rem 0 4.5rem 0;
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
   position: relative;
   overflow-x: auto;
   background: transparent;
@@ -136,6 +137,19 @@ const PhotoPlaceholder = styled.div`
   color: #ff69b4;
   font-size: 1.1rem;
   font-family: 'Dancing Script', cursive;
+`;
+
+const EmojiBg = styled.div`
+  position: absolute;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  font-size: 3.2rem;
+  opacity: 0.13;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
 `;
 
 const DEFAULT_YEARS = Array.from({length: 2025-2004+1}, (_,i) => 2004+i);
@@ -357,6 +371,15 @@ const TimelineSection = () => {
 
   return (
     <Section id="timeline">
+      <EmojiBg>
+        <span style={{margin: '2vw 1vw'}}>👶</span>
+        <span style={{margin: '8vw 2vw'}}>🎂</span>
+        <span style={{margin: '4vw 8vw'}}>🌸</span>
+        <span style={{margin: '6vw 4vw'}}>💖</span>
+        <span style={{margin: '7vw 9vw'}}>✨</span>
+        <span style={{margin: '1vw 7vw'}}>🎈</span>
+        <span style={{margin: '9vw 3vw'}}>🧸</span>
+      </EmojiBg>
       <GlobalStyle />
       <Title>Your Journey</Title>
       <TimelineWrapper ref={wrapperRef} style={{position: 'relative'}}>

@@ -67,32 +67,6 @@ const Content = styled.div`
   pointer-events: auto;
 `;
 
-const BottomImageBox = styled.div`
-  margin-top: 2.5rem;
-  width: 340px;
-  height: 260px;
-  border-radius: 24px;
-  background: #ffe1fa;
-  box-shadow: 0 2px 28px rgba(255, 105, 180, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-`;
-
-const EnvelopeContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 90vw;
-  max-width: 700px;
-  min-width: 320px;
-  height: 40vh;
-  margin: 2.5rem 0 0 0;
-  background: #ffe1fa;
-  border-radius: 24px;
-`;
-
 const Title = styled(motion.h1)`
   font-size: 5.6rem;
   color: #ff69b4;
@@ -199,21 +173,13 @@ export default function LandingSection() {
         >
           ▶ Play Birthday Video
         </PlayButton>
-        <EnvelopeContainer />
-        <BottomImageBox>
-          {/* Place an image here, e.g.: */}
-          {/* <img src="/images/your-photo.jpg" alt="Heetu" style={{width: '100%', height: '100%', objectFit: 'cover'}} /> */}
-        </BottomImageBox>
       </Content>
       {showVideo && (
         <Overlay onClick={handleClose}>
-          <Video
-            src="/videos/personalized_birthday.mp4"
-            controls
-            autoPlay
-            onClick={e => e.stopPropagation()}
-            style={{objectFit: 'cover'}}
-          />
+          <Video controls autoPlay>
+            <source src="/video/hb21.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </Video>
         </Overlay>
       )}
     </Section>
