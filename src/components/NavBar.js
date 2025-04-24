@@ -64,14 +64,14 @@ const Heart = styled.span`
   }
 `;
 
-const NavBar = () => (
+const NavBar = ({ onNavClick }) => (
   <Nav>
     <Heart>♥</Heart>
     <NavList>
-      <NavItem><NavLink href="#landing">Welcome</NavLink></NavItem>
-      <NavItem><NavLink href="#timeline">Your Journey</NavLink></NavItem>
-      <NavItem><NavLink href="#gallery">Photo Gallery</NavLink></NavItem>
-      <NavItem><NavLink href="#love-letter">Love Letter</NavLink></NavItem>
+      <NavItem><NavLink as="button" onClick={() => onNavClick('landing')}>Welcome</NavLink></NavItem>
+      <NavItem><NavLink as="button" onClick={() => onNavClick('love-letter')}>Letter from Me</NavLink></NavItem>
+      <NavItem><NavLink as="button" onClick={() => onNavClick('gallery')}>Photo Gallery</NavLink></NavItem>
+      <NavItem><NavLink as="button" onClick={() => onNavClick('timeline')}>Your Journey</NavLink></NavItem>
     </NavList>
   </Nav>
 );

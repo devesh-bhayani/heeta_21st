@@ -6,8 +6,6 @@ import { motion } from 'framer-motion';
 const Section = styled.section`
   width: 100vw;
   height: 100vh;
-  min-height: 100vh;
-  max-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -65,9 +63,6 @@ const Content = styled.div`
   justify-content: center;
   width: 100vw;
   height: 100vh;
-  min-height: 100vh;
-  max-height: 100vh;
-  flex: 1 1 0;
   position: relative;
   pointer-events: auto;
 `;

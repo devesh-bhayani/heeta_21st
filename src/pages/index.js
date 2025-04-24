@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import NavBar from '../components/NavBar';
 import LandingSection from '../sections/LandingSection';
 import TimelineSection from '../sections/TimelineSection';
@@ -14,30 +14,31 @@ function ScrollToTopOnLoad() {
 }
 
 export default function Home() {
+  const [activeSection, setActiveSection] = useState('landing');
+
+  // Scroll handler for navbar links
+  function handleNavClick(sectionId) {
+    setActiveSection(sectionId);
+    const el = document.getElementById(sectionId);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
   return (
     <>
       <ScrollToTopOnLoad />
-      <NavBar />
+      <NavBar onNavClick={handleNavClick} />
       <div id="main-scroll" style={{
         width: '100vw',
         minHeight: '100vh',
         background: 'linear-gradient(120deg, #ffe1fa 0%, #ffd6eb 55%, #fffbe8 100%)',
         overflowX: 'hidden',
       }}>
-        <LandingSection />
-        <LoveLetterSection />
-        <div id="timeline-anchor" style={{
-          minHeight: '100vh',
-          boxSizing: 'border-box',
-          width: '100vw',
-          overflow: 'hidden',
-          background: 'linear-gradient(135deg, #fffbe8 0%, #ffe1fa 100%)',
-          display: 'block',
-          position: 'relative'
-        }}>
-          <GallerySection />
-          <TimelineSection />
-        </div>
+        {activeSection === 'landing' && <LandingSection />}
+        {activeSection === 'love-letter' && <LoveLetterSection />}
+        {activeSection === 'gallery' && <GallerySection />}
+        {activeSection === 'timeline' && <TimelineSection />}
       </div>
     </>
   );
