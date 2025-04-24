@@ -24,7 +24,7 @@ const Section = styled.section`
   box-sizing: border-box;
   background: linear-gradient(120deg, #ffe1fa 0%, #ffd6eb 55%, #fffbe8 100%);
   overflow-x: hidden;
-  padding: 0;
+  padding: 80px 0 0 0;
 `;
 
 const Title = styled.h2`
