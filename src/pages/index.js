@@ -4,6 +4,7 @@ import TimelineSection from '../sections/TimelineSection';
 import GallerySection from '../sections/GallerySection';
 import LoveLetterSection from '../sections/LoveLetterSection';
 import NavBar from '../components/NavBar';
+import '../styles/GlobalStyle';
 
 // Ensure main container has padding-top to prevent overlap with fixed navbar
 function ScrollToTopOnLoad() {
@@ -15,6 +16,17 @@ function ScrollToTopOnLoad() {
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState('landing');
+
+  useEffect(() => {
+    // Ensure font and styles are loaded on every render/refresh
+    const dancingScript = document.createElement('link');
+    dancingScript.rel = 'stylesheet';
+    dancingScript.href = 'https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@400;700&display=swap';
+    document.head.appendChild(dancingScript);
+    return () => {
+      document.head.removeChild(dancingScript);
+    };
+  }, []);
 
   // Scroll handler for navbar links
   function handleNavClick(sectionId) {

@@ -50,6 +50,11 @@ const NavLink = styled.a`
   margin: 0 0.2rem;
   position: relative;
   overflow: visible;
+  outline: none;
+  border-style: solid;
+  border-width: 2.5px;
+  border-color: #ff69b4;
+  appearance: none;
   &:hover, &:focus {
     background: linear-gradient(90deg, #ffb6df 0%, #ff69b4 100%);
     color: #fff;
