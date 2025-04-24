@@ -21,7 +21,7 @@ const Section = styled.section`
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
   scroll-snap-align: start;
   position: relative;

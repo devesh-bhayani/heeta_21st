@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { useEffect, useState } from 'react';
 
 /**
  * Gallery Section Container
@@ -89,30 +90,37 @@ const GalleryImage = styled.img`
   }
 `;
 
-// TODO: Replace with your own gallery images
-const images = [
-  '/images/sample1.jpg',
-  '/images/sample2.jpg',
-  '/images/sample3.jpg',
-  '/images/sample4.jpg',
-  '/images/sample5.jpg',
-  '/images/sample6.jpg',
-];
+// Add instructions for user images
+/**
+ * To add images to the gallery:
+ * 1. Place your images in the `public/gallery/` folder.
+ * 2. Name them sequentially, e.g., photo1.jpg, photo2.jpg, ...
+ * 3. Supported formats: .jpg, .jpeg, .png, .webp
+ * 4. Images will be loaded automatically in the order of their names.
+ */
+
+function importAll(r) {
+  return r.keys().map(r);
+}
+
+const images = importAll(require.context('../../public/gallery', false, /\.(jpg|jpeg|png|webp)$/));
 
 /**
  * Gallery Section
  * 
  * A section component that displays a photo gallery.
  */
-const GallerySection = () => (
-  <Section id="gallery">
-    <Title>Photo Gallery</Title>
-    <GalleryGrid>
-      {images.map((img, idx) => (
-        <GalleryImage key={idx} src={img} alt={`Gallery image ${idx + 1}`} />
-      ))}
-    </GalleryGrid>
-  </Section>
-);
+function GallerySection() {
+  return (
+    <Section id="gallery">
+      <Title>Photo Gallery</Title>
+      <GalleryGrid>
+        {images.map((img, idx) => (
+          <GalleryImage key={idx} src={img.default || img} alt={`Photo ${idx + 1}`} />
+        ))}
+      </GalleryGrid>
+    </Section>
+  );
+}
 
 export default GallerySection;

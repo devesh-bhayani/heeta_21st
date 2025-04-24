@@ -27,31 +27,20 @@ const Section = styled.section`
   margin-bottom: 0;
   box-shadow: 0 6px 24px -10px #ff8ac680;
 
-  /* Romantic emoji background */
-  &::before {
-    content: '💌 💖 📝';
+  /* Romantic emoji background - spread out and random */
+  & .emoji-bg {
     position: absolute;
-    top: 10%;
-    left: 7%;
-    font-size: 5rem;
-    opacity: 0.09;
+    z-index: 0;
     pointer-events: none;
-  }
-  &::after {
-    content: '🌹 ✉️ ✨';
-    position: absolute;
-    bottom: 10%;
-    right: 7%;
-    font-size: 4.5rem;
+    font-size: 3.6rem;
     opacity: 0.11;
-    pointer-events: none;
   }
 `;
 
 // --- Envelope: Use Custom Image ---
 const EnvelopeImage = styled(motion.img)`
-  width: 520px;
-  height: 340px;
+  width: 598px;
+  height: 391px;
   object-fit: cover;
   border-radius: 28px;
   box-shadow: 0 2px 28px rgba(255, 105, 180, 0.18);
@@ -127,7 +116,7 @@ const Page = styled(motion.div)`
   justify-content: center;
   padding: 4rem 3rem;
   font-family: 'Dancing Script', cursive;
-  font-size: 2.5rem;
+  font-size: 3.1rem;
   color: #800020;
   z-index: 1001;
   text-align: center;
@@ -210,6 +199,17 @@ const Title = styled.h2`
   margin-bottom: 1.5rem;
 `;
 
+// --- Letter Text ---
+const LetterText = styled.div`
+  font-family: 'Dancing Script', cursive;
+  font-size: 3.1rem;
+  color: #e94e89;
+  text-align: center;
+  margin-top: 2.6rem;
+  margin-bottom: 2.6rem;
+  z-index: 4;
+`;
+
 const LoveLetterSection = () => {
   // Updated: Happy Birthday letter message
   const message = `Happy Birthday to the most wonderful person in my life!\n\nMay your day be filled with joy, laughter, and all the love you deserve. I am so grateful to have you by my side. Here’s to many more birthdays and beautiful memories together!\n\nWith all my love,\n[Your Name]`;
@@ -233,6 +233,13 @@ const LoveLetterSection = () => {
 
   return (
     <Section id="love-letter">
+      {/* Spread out emojis randomly in the background */}
+      <span className="emoji-bg" style={{top: '7%', left: '8%'}}>💌</span>
+      <span className="emoji-bg" style={{top: '15%', right: '10%'}}>💖</span>
+      <span className="emoji-bg" style={{top: '60%', left: '12%'}}>📝</span>
+      <span className="emoji-bg" style={{top: '78%', right: '13%'}}>🌹</span>
+      <span className="emoji-bg" style={{top: '44%', left: '54%'}}>✉️</span>
+      <span className="emoji-bg" style={{top: '75%', left: '70%'}}>✨</span>
       <Title>Birthday Letter</Title>
       <EnvelopeImage
         src="/envelope-21st.png"
@@ -243,6 +250,10 @@ const LoveLetterSection = () => {
         transition={{ type: 'spring', stiffness: 100 }}
         style={{ cursor: isOpen ? 'default' : 'pointer' }}
       />
+      <LetterText>
+        {/* Your letter text here, now larger! */}
+        Ready for a magical surprise? Open the envelope and let your heart be filled with love!
+      </LetterText>
       {showLetter && (
         <motion.div
           initial={{ y: 180, opacity: 0 }}
@@ -319,9 +330,6 @@ const LoveLetterSection = () => {
           </Page>
         </Overlay>
       )}
-      <div style={{color: '#a67c52', fontFamily: 'Dancing Script, cursive', fontSize: '1.3rem', marginTop: '1.2rem'}}>
-        Ready for a magical surprise? Open the envelope and let your heart be filled with love!
-      </div>
     </Section>
   );
 };

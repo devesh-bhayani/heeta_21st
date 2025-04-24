@@ -67,6 +67,19 @@ const Content = styled.div`
   pointer-events: auto;
 `;
 
+const BottomImageBox = styled.div`
+  margin-top: 2.5rem;
+  width: 340px;
+  height: 260px;
+  border-radius: 24px;
+  background: #ffe1fa;
+  box-shadow: 0 2px 28px rgba(255, 105, 180, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+`;
+
 const EnvelopeContainer = styled.div`
   display: flex;
   align-items: center;
@@ -187,6 +200,10 @@ export default function LandingSection() {
           ▶ Play Birthday Video
         </PlayButton>
         <EnvelopeContainer />
+        <BottomImageBox>
+          {/* Place an image here, e.g.: */}
+          {/* <img src="/images/your-photo.jpg" alt="Heetu" style={{width: '100%', height: '100%', objectFit: 'cover'}} /> */}
+        </BottomImageBox>
       </Content>
       {showVideo && (
         <Overlay onClick={handleClose}>
