@@ -39,9 +39,10 @@ const Title = styled.h2`
 
 const TimelineWrapper = styled.div`
   width: 100vw;
-  max-width: 1600px;
+  max-width: 1800px;
   margin: 0 auto;
-  min-height: 475px;
+  min-height: 75vh;
+  height: 75vh;
   padding: 2rem 0 4rem 0;
   display: flex;
   flex-direction: column;
@@ -67,16 +68,14 @@ const TimelineLine = styled.div`
 
 const TimelineEvent = styled.div`
   position: relative;
-  min-width: 180px;
-  max-width: 220px;
-  margin: 0 40px;
+  min-width: 270px;
+  max-width: 330px;
+  margin: 0 80px;
   display: flex;
   flex-direction: column;
   align-items: center;
   scroll-snap-align: center;
   z-index: 2;
-  margin-top: 2.5rem; /* Extra space above event */
-  margin-bottom: 2.5rem; /* Extra space below event */
   top: ${({align}) => align === 'top' ? '-80px' : '80px'};
   transition: top 0.3s;
 `;
@@ -105,7 +104,7 @@ const YearRose = styled.div`
   position: relative;
   z-index: 2;
   font-family: 'Dancing Script', cursive;
-  font-size: 0.95rem;
+  font-size: 2.8rem;
   color: #ff69b4;
   font-weight: bold;
   transition: box-shadow 0.2s, transform 0.2s;
@@ -120,16 +119,16 @@ const RoseImg = styled.img`
   position: absolute;
   bottom: -5px;
   right: -5px;
-  width: 16px;
-  height: 16px;
+  width: 35px;
+  height: 35px;
   filter: drop-shadow(0 1px 1px #ffb6df);
   z-index: 3;
   pointer-events: none;
 `;
 
 const PhotoPlaceholder = styled.div`
-  width: 200px;
-  height: 200px;
+  width: 438px;
+  height: 522px;
   background: #ffe1f0;
   border: 2.5px dashed #ff69b4;
   border-radius: 18px;
@@ -153,6 +152,27 @@ const EmojiBg = styled.div`
   flex-wrap: wrap;
   align-items: flex-start;
   justify-content: space-between;
+`;
+
+const AnimatedJourneySvg = styled.svg`
+  position: absolute;
+  left: 0; top: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 5;
+  overflow: visible;
+`;
+
+const AnimatedHeart = styled.text`
+  font-size: 2.6rem;
+  fill: #ff69b4;
+  filter: drop-shadow(0 0 8px #ffb6df) drop-shadow(0 0 18px #ff69b4);
+  animation: heartMove 5s linear infinite;
+  @keyframes heartMove {
+    0% { opacity: 0.8; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { opacity: 0.8; }
+  }
 `;
 
 const DEFAULT_YEARS = Array.from({length: 2025-2004+1}, (_,i) => 2004+i);
@@ -187,103 +207,6 @@ function lerpPoint(p1, p2, t) {
 }
 function angleBetween(p1, p2) {
   return Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
-}
-
-// --- Repeat footsteps animation 3 times between each pair of blocks, for all segments ---
-function useFootstepTrail(eventPositions, footstepsCount = 6, segmentDuration = 18000, pauseDuration = 2600) {
-  const [progress, setProgress] = React.useState(0); // 0 to 1 over all segments
-  const [paused, setPaused] = React.useState(false);
-  const requestRef = React.useRef();
-  const lastTimeRef = React.useRef();
-  const repeatCount = 3;
-  const totalSegments = eventPositions?.length - 1 || 0;
-  const totalCycles = totalSegments * repeatCount;
-
-  React.useEffect(() => {
-    function animate(time) {
-      if (!lastTimeRef.current) lastTimeRef.current = time;
-      const delta = time - lastTimeRef.current;
-      lastTimeRef.current = time;
-      if (!paused) {
-        setProgress(prev => {
-          let next = prev + delta / (segmentDuration * totalSegments);
-          if (next >= 1) {
-            setPaused(true);
-            setTimeout(() => {
-              setPaused(false);
-              setProgress(0);
-              lastTimeRef.current = null;
-            }, pauseDuration);
-            return 1;
-          }
-          return next;
-        });
-      }
-      requestRef.current = requestAnimationFrame(animate);
-    }
-    requestRef.current = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(requestRef.current);
-  }, [paused, segmentDuration, pauseDuration, eventPositions?.length]);
-
-  if (!eventPositions || eventPositions.length < 2) return [];
-
-  // Calculate current segment and cycle
-  const overallCycle = progress * totalCycles;
-  const segmentIndex = Math.floor(overallCycle / repeatCount);
-  const cycleInSegment = overallCycle % repeatCount;
-  const tInCycle = (overallCycle - Math.floor(overallCycle)) || 0;
-
-  const startPt = eventPositions[segmentIndex];
-  const endPt = eventPositions[segmentIndex + 1];
-  if (!startPt || !endPt) return [];
-  const trailSpacing = 0.09;
-  const stepOffset = 18;
-  const footstepsArr = [];
-  for (let i = 0; i < footstepsCount; i++) {
-    let t = Math.max(0, tInCycle - i * trailSpacing);
-    t = Math.max(0, Math.min(t, 1));
-    const curve = Math.sin(t * Math.PI) * 40 * (segmentIndex % 2 === 0 ? 1 : -1);
-    const base = {
-      x: startPt.x + (endPt.x - startPt.x) * t,
-      y: startPt.y + (endPt.y - startPt.y) * t + curve,
-    };
-    let nextT = Math.min(t + 0.01, 1);
-    let nextPos = {
-      x: startPt.x + (endPt.x - startPt.x) * nextT,
-      y: startPt.y + (endPt.y - startPt.y) * nextT + Math.sin(nextT * Math.PI) * 40 * (segmentIndex % 2 === 0 ? 1 : -1),
-    };
-    const angleRad = Math.atan2(nextPos.y - base.y, nextPos.x - base.x);
-    const isLeft = i % 2 === 0;
-    const offsetAngle = angleRad + (isLeft ? -Math.PI/2 : Math.PI/2);
-    const offsetX = Math.cos(offsetAngle) * stepOffset;
-    const offsetY = Math.sin(offsetAngle) * stepOffset;
-
-    // Adjusted opacity transition for 6 steps
-    let opacity = 0.2;
-    if (i === 0) {
-      opacity = t < 0.6 ? 1 : 1 - (t - 0.6) / 0.4; // fades out at end
-    } else if (i === 1) {
-      opacity = t < 0.3 ? 0.7 : t < 0.6 ? 0.7 + (t - 0.3) / 0.3 * 0.3 : 1;
-    } else if (i === 2) {
-      opacity = t < 0.2 ? 0.5 : t < 0.5 ? 0.5 + (t - 0.2) / 0.3 * 0.5 : 1;
-    } else if (i === 3) {
-      opacity = t < 0.1 ? 0.3 : t < 0.3 ? 0.3 + (t - 0.1) / 0.2 * 0.5 : 0.8;
-    } else if (i === 4) {
-      opacity = t < 0.05 ? 0.1 : t < 0.2 ? 0.1 + (t - 0.05) / 0.15 * 0.4 : 0.5;
-    } else if (i === 5) {
-      opacity = t < 0.03 ? 0.05 : t < 0.1 ? 0.05 + (t - 0.03) / 0.07 * 0.15 : 0.2;
-    }
-
-    footstepsArr.push({
-      x: base.x + offsetX,
-      y: base.y + offsetY,
-      angle: angleRad * 180 / Math.PI + 90,
-      opacity,
-      isLeft,
-      key: `footstep-${segmentIndex}-${cycleInSegment}-${i}`,
-    });
-  }
-  return footstepsArr;
 }
 
 const TimelineSection = () => {
@@ -339,8 +262,8 @@ const TimelineSection = () => {
 
   const eventSpacing = 240;
   const timelineY = 200;
-  const topOffset = 80;
-  const bottomOffset = 80;
+  const topOffset = 180;
+  const bottomOffset = 120;
 
   // PATCH: Defensive fallback for eventPositions to always have at least 2 points
   const eventPositions = React.useMemo(() =>
@@ -348,14 +271,11 @@ const TimelineSection = () => {
       ? [ { x: 120, y: 120 }, { x: 360, y: 320 } ]
       : uniqueEvents.map((event, idx) => {
           const x = 120 + idx * eventSpacing;
-          const y = idx % 2 === 0 ? timelineY - topOffset : timelineY + bottomOffset;
+          // Center the line on the photo, not above it
+          const y = timelineY + 522 / 2; // 522 is PhotoPlaceholder height
           return { x, y };
         })
-  , [uniqueEvents, eventSpacing, timelineY, topOffset, bottomOffset]);
-
-  // --- Use the new robust footsteps hook ---
-  const footstepsCount = 6; // Show 6 footsteps together
-  const trail = useFootstepTrail(eventPositions, footstepsCount, 18000, 2600); // 18s per segment, 2.6s pause (slower)
+  , [uniqueEvents, eventSpacing, timelineY]);
 
   const addEvent = async () => {
     try {
@@ -384,71 +304,48 @@ const TimelineSection = () => {
       <GlobalStyle />
       <Title>Your Journey</Title>
       <TimelineWrapper ref={wrapperRef}>
-        {/* Footsteps animation overlay */}
-        <div style={{
-          position: 'absolute',
-          left: 0,
-          top: 0,
-          width: '100%',
-          height: '100%',
-          pointerEvents: 'none',
-          zIndex: 4,
-          overflow: 'visible',
-        }}>
-          {/* Debug path for footsteps (optional, can remove later) */}
-          <svg width="100%" height="100%" style={{ position: 'absolute', left: 0, top: 0, pointerEvents: 'none', zIndex: 3 }}>
-            {eventPositions.map((pt, idx) => idx < eventPositions.length - 1 && (
-              <line
-                key={idx}
-                x1={pt.x}
-                y1={pt.y}
-                x2={eventPositions[idx + 1].x}
-                y2={eventPositions[idx + 1].y}
-                stroke="#ffb6df"
-                strokeDasharray="8 6"
-                strokeWidth="3"
-                opacity="0.25"
-              />
-            ))}
-          </svg>
-          {trail.map((f, idx) => (
-            <img
-              key={f.key}
-              src={"/footsteps-offset.svg"}
-              alt="Footsteps"
-              style={{
-                width: '17px', // Half the previous size
-                height: '17px',
-                objectFit: 'contain',
-                filter: 'drop-shadow(0 0 12px #ff69b4) drop-shadow(0 0 22px #ff0040)',
-                opacity: f.opacity,
-                position: 'absolute',
-                left: `${f.x - 8.5}px`,
-                top: `${f.y - 8.5}px`,
-                pointerEvents: 'none',
-                transform: `rotate(${f.angle}deg)`,
-                zIndex: 5,
-              }}
-              onError={e => { e.target.onerror = null; e.target.src = 'https://upload.wikimedia.org/wikipedia/commons/8/84/Example.svg'; }}
-            />
-          ))}
-        </div>
+        {/* Decorative Animated Journey Path */}
+        <AnimatedJourneySvg width="100%" height="100%">
+          {/* Decorative Animated Hearts randomly placed around the timeline section */}
+          {Array.from({length: 8}).map((_, i) => {
+            // Random positions for hearts (top 10%-70%, left 10%-90%)
+            const top = Math.random() * 60 + 10;
+            const left = Math.random() * 80 + 10;
+            const duration = Math.random() * 2 + 3.5; // 3.5s - 5.5s
+            return (
+              <AnimatedHeart
+                key={i}
+                x={left + '%'}
+                y={top + '%'}
+                style={{
+                  position: 'absolute',
+                  left: left + '%',
+                  top: top + '%',
+                  transition: 'none',
+                  animationDuration: duration + 's',
+                }}
+              >💗</AnimatedHeart>
+            );
+          })}
+        </AnimatedJourneySvg>
         <TimelineLine />
         {/* Horizontal flex row for events */}
         <div
           style={{
             display: 'flex',
             flexDirection: 'row',
-            alignItems: 'flex-end',
-            justifyContent: 'center',
-            width: '100%',
-            maxWidth: '1400px',
-            margin: '0 auto',
+            alignItems: 'center',
+            justifyContent: 'flex-start',
+            width: '100vw',
+            maxWidth: '1800px',
+            minHeight: '100%',
+            height: '100%',
             position: 'relative',
             zIndex: 3,
             overflowX: 'auto',
-            minHeight: '475px',
+            margin: '0 auto',
             marginBottom: '5rem',
+            gap: '80px',
           }}
         >
           {loading ? (
@@ -460,12 +357,33 @@ const TimelineSection = () => {
               <TimelineEvent
                 key={event.id}
                 align={idx % 2 === 0 ? 'top' : 'bottom'}
-                style={{marginLeft: idx === 0 ? 120 : 0, marginBottom: 0}}
               >
-                <YearRose>
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '-60px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    background: '#fffbe8',
+                    color: '#ff69b4',
+                    fontSize: '2.8rem',
+                    fontFamily: 'Dancing Script',
+                    width: '155px',
+                    height: '93px',
+                    padding: '0',
+                    borderRadius: '2.8rem',
+                    boxShadow: '0 2px 8px #ffd6eb60',
+                    border: '2.5px solid #ff69b4',
+                    zIndex: '10',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '1.4rem',
+                  }}
+                >
                   {event.year}
                   <RoseImg src="/images/rose.png" alt="rose" />
-                </YearRose>
+                </div>
                 <PhotoPlaceholder>
                   <img
                     src={event.photoUrl && event.photoUrl.trim() !== "" 

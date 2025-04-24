@@ -212,7 +212,22 @@ const LetterText = styled.div`
 
 const LoveLetterSection = () => {
   // Updated: Happy Birthday letter message
-  const message = `Happy Birthday to the most wonderful person in my life!\n\nMay your day be filled with joy, laughter, and all the love you deserve. I am so grateful to have you by my side. Here’s to many more birthdays and beautiful memories together!\n\nWith all my love,\n[Your Name]`;
+  const message = `My Dearest Heetu,
+
+Happy 21st Birthday babyyy!
+
+Today is all about you, and I want to make sure you know just how special you are to me. I feel so incredibly lucky to have you in my life, and I can’t help but smile when I think about all the amazing memories we’ve already made together—and all the adventures still to come.
+
+You are more than just my girlfriend; you’re my best friend and the person who makes every day brighter. Your laughter is my favorite sound, your smile my favorite sight, and your happiness my favorite goal.
+
+Turning 21 is such a special milestone, and I hope this year brings you as much joy and excitement as you bring into my world every single day. May your dreams get bigger, your worries get smaller, and you remain as joyful a person as you are forever.
+
+Thank you for being you—so loving, so caring, so wonderfully unique. I can’t wait to celebrate you today and always.
+
+Happy birthday, beautiful. Here’s to you, to us, and to all the amazing years ahead.
+
+Love You, 
+Devu.`;
   const [isOpen, setIsOpen] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [showLetter, setShowLetter] = useState(false);

@@ -1,4 +1,6 @@
 import { useEffect } from "react";
+import NavBar from '../components/NavBar';
+import '../styles/GlobalStyle';
 import GlobalStyle from '../styles/GlobalStyle';
 import { ThemeProvider } from 'styled-components';
 import theme from '../styles/theme';
@@ -29,6 +31,7 @@ function App({ Component, pageProps }) {
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle />
+      <NavBar />
       <ForceScrollToTop />
       <Component {...pageProps} />
     </ThemeProvider>
