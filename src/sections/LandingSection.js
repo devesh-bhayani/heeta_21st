@@ -8,20 +8,14 @@ const Section = styled.section`
   height: 100vh;
   min-height: 100vh;
   max-height: 100vh;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  scroll-snap-align: start;
   position: relative;
   box-sizing: border-box;
-  background: linear-gradient(120deg, #ffe1fa 0%, #ffd6eb 55%, #fffbe8 100%);
-  padding: 0;
-  margin: 0;
-  z-index: 1;
   overflow: hidden;
-  box-sizing: border-box;
+  background: linear-gradient(120deg, #ffe1fa 0%, #ffd6eb 55%, #fffbe8 100%);
 `;
 
 const AnimatedBg = styled.div`
@@ -63,9 +57,36 @@ const AnimatedBg = styled.div`
   }
 `;
 
+const Content = styled.div`
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
+  max-height: 100vh;
+  flex: 1 1 0;
+  position: relative;
+  pointer-events: auto;
+`;
+
+const EnvelopeContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 90vw;
+  max-width: 700px;
+  min-width: 320px;
+  height: 40vh;
+  margin: 2.5rem 0 0 0;
+  background: #ffe1fa;
+  border-radius: 24px;
+`;
+
 const Title = styled(motion.h1)`
   font-size: 5.6rem;
-  margin-bottom: 2.5rem;
   color: #ff69b4;
   font-family: 'Dancing Script', cursive;
   text-align: center;
@@ -79,7 +100,6 @@ const Subtitle = styled(motion.div)`
   color: #b96fa4;
   font-family: 'Dancing Script', cursive;
   text-align: center;
-  margin-bottom: 2.8rem;
   letter-spacing: 1.3px;
   text-shadow: 0 2px 12px #fffbe8;
 `;
@@ -142,24 +162,11 @@ export default function LandingSection() {
         <span role="img" aria-label="wand">🪄</span>
         <span role="img" aria-label="heart">💖</span>
       </AnimatedBg>
-      <div style={{
-        width: '100vw',
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        zIndex: 2,
-        pointerEvents: 'none',
-      }}>
+      <Content>
         <Title
           initial={{ opacity: 0, y: -40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          style={{ pointerEvents: 'auto' }}
         >
           <span role="img" aria-label="cake">🎂</span>{' '}
           <span role="img" aria-label="party">🎉</span>{' '}
@@ -172,7 +179,6 @@ export default function LandingSection() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, delay: 0.5 }}
-          style={{ pointerEvents: 'auto' }}
         >
           Wishing you a magical day filled with joy, love, and sparkle!<br/>
           Scroll down to begin your journey 🎉
@@ -182,11 +188,11 @@ export default function LandingSection() {
           animate={{ scale: 1 }}
           transition={{ delay: 1, type: 'spring', stiffness: 120 }}
           onClick={handlePlay}
-          style={{ pointerEvents: 'auto' }}
         >
           ▶ Play Birthday Video
         </PlayButton>
-      </div>
+        <EnvelopeContainer />
+      </Content>
       {showVideo && (
         <Overlay onClick={handleClose}>
           <Video

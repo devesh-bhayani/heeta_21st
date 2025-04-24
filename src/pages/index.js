@@ -18,13 +18,14 @@ export default function Home() {
     <>
       <ScrollToTopOnLoad />
       <NavBar />
-      <div style={{
+      <div id="main-scroll" style={{
         width: '100vw',
-        height: '100vh',
-        overflowY: 'auto',
-        scrollSnapType: 'y mandatory',
+        minHeight: '100vh',
+        background: 'linear-gradient(120deg, #ffe1fa 0%, #ffd6eb 55%, #fffbe8 100%)',
+        overflowX: 'hidden',
       }}>
         <LandingSection />
+        <LoveLetterSection />
         <div id="timeline-anchor" style={{
           minHeight: '100vh',
           boxSizing: 'border-box',
@@ -34,7 +35,6 @@ export default function Home() {
           display: 'block',
           position: 'relative'
         }}>
-          <LoveLetterSection />
           <GallerySection />
           <TimelineSection />
         </div>

@@ -3,20 +3,18 @@ import styled from 'styled-components';
 // --- Enhanced NavBar Styling ---
 const Nav = styled.nav`
   width: 100vw;
-  background: linear-gradient(90deg, #ffe1fa 0%, #ffd6eb 50%, #fffbe8 100%);
-  box-shadow: 0 4px 24px rgba(255, 105, 180, 0.10);
+  height: 60px;
+  background: #fff8fa;
+  box-shadow: 0 2px 12px rgba(255, 105, 180, 0.07);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.2rem 3vw;
+  padding: 0.8rem 3vw;
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 100;
+  z-index: 1000;
   font-family: 'Dancing Script', cursive;
-  letter-spacing: 1.2px;
-  border-bottom: 2.5px solid #ff69b4;
-  backdrop-filter: blur(6px);
 `;
 
 const NavList = styled.ul`
