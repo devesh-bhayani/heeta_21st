@@ -15,37 +15,40 @@ import { createGlobalStyle } from 'styled-components';
 
 const Section = styled.section`
   width: 100vw;
-  height: 100vh;
   min-height: 100vh;
-  max-height: 100vh;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-  justify-content: center;
-  scroll-snap-align: start;
+  align-items: center;
+  justify-content: flex-start;
   position: relative;
   box-sizing: border-box;
   background: linear-gradient(120deg, #ffe1fa 0%, #ffd6eb 55%, #fffbe8 100%);
+  overflow-x: hidden;
+  padding: 0;
 `;
 
 const Title = styled.h2`
   text-align: center;
-  margin-bottom: 2rem;
-  color: ${({ theme }) => theme.colors.primary};
+  margin: 2.5rem auto 2.5rem auto;
+  color: #ff69b4;
+  font-size: 3.7rem;
+  font-family: 'Dancing Script', cursive;
+  letter-spacing: 2px;
+  text-shadow: 0 3px 18px #fffbe8, 0 1px 0 #ffd6eb;
 `;
 
 const TimelineWrapper = styled.div`
   width: 100vw;
+  max-width: 1600px;
+  margin: 0 auto;
   min-height: 475px;
-  padding: 3.5rem 0 4.5rem 0;
+  padding: 2rem 0 4rem 0;
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
   position: relative;
   overflow-x: auto;
   background: transparent;
-  scroll-snap-type: x mandatory;
   z-index: 2;
 `;
 
@@ -144,8 +147,8 @@ const EmojiBg = styled.div`
   top: 0; left: 0; width: 100vw; height: 100vh;
   pointer-events: none;
   z-index: 0;
-  font-size: 3.2rem;
-  opacity: 0.13;
+  font-size: 2.3rem;
+  opacity: 0.09;
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
@@ -377,12 +380,10 @@ const TimelineSection = () => {
         <span style={{margin: '4vw 8vw'}}>🌸</span>
         <span style={{margin: '6vw 4vw'}}>💖</span>
         <span style={{margin: '7vw 9vw'}}>✨</span>
-        <span style={{margin: '1vw 7vw'}}>🎈</span>
-        <span style={{margin: '9vw 3vw'}}>🧸</span>
       </EmojiBg>
       <GlobalStyle />
       <Title>Your Journey</Title>
-      <TimelineWrapper ref={wrapperRef} style={{position: 'relative'}}>
+      <TimelineWrapper ref={wrapperRef}>
         {/* Footsteps animation overlay */}
         <div style={{
           position: 'absolute',
@@ -438,12 +439,15 @@ const TimelineSection = () => {
           style={{
             display: 'flex',
             flexDirection: 'row',
-            alignItems: 'center',
+            alignItems: 'flex-end',
+            justifyContent: 'center',
             width: '100%',
+            maxWidth: '1400px',
+            margin: '0 auto',
             position: 'relative',
             zIndex: 3,
             overflowX: 'auto',
-            minHeight: '475px', // Ensure this matches the styled component
+            minHeight: '475px',
             marginBottom: '5rem',
           }}
         >
@@ -478,12 +482,6 @@ const TimelineSection = () => {
         </div>
         {/* Spacer to force section height and separation */}
         <div style={{height: '80px', width: '100%'}}></div>
-        {/* Scattered background emojis */}
-        <span className="timeline-bg-emoji" style={{top: '10%', left: '10%'}}>&#x1F49A;</span>
-        <span className="timeline-bg-emoji" style={{top: '20%', left: '30%'}}>&#x1F49B;</span>
-        <span className="timeline-bg-emoji" style={{top: '30%', left: '50%'}}>&#x1F49C;</span>
-        <span className="timeline-bg-emoji" style={{top: '40%', left: '70%'}}>&#x1F49D;</span>
-        <span className="timeline-bg-emoji" style={{top: '50%', left: '90%'}}>&#x1F49E;</span>
       </TimelineWrapper>
     </Section>
   );
