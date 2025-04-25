@@ -33,7 +33,7 @@ const NavItem = styled.li`
   list-style: none;
 `;
 
-const NavLink = styled.a`
+const NavLink = styled.button`
   font-family: 'Dancing Script', cursive;
   font-size: 2.2rem;
   color: #ff69b4;
@@ -98,10 +98,10 @@ const NavBar = ({ onNavClick }) => (
   <Nav>
     <Heart>♥</Heart>
     <NavList>
-      <NavItem><NavLink as="button" onClick={() => onNavClick('landing')}>Welcome</NavLink></NavItem>
-      <NavItem><NavLink as="button" onClick={() => onNavClick('love-letter')}>Letter from Me</NavLink></NavItem>
-      <NavItem><NavLink as="button" onClick={() => onNavClick('gallery')}>Photo Gallery</NavLink></NavItem>
-      <NavItem><NavLink as="button" onClick={() => onNavClick('timeline')}>Your Journey</NavLink></NavItem>
+      <NavItem><NavLink onClick={() => onNavClick('landing')}>Welcome</NavLink></NavItem>
+      <NavItem><NavLink onClick={() => onNavClick('love-letter')}>Letter from Me</NavLink></NavItem>
+      <NavItem><NavLink onClick={() => onNavClick('gallery')}>Photo Gallery</NavLink></NavItem>
+      <NavItem><NavLink onClick={() => onNavClick('timeline')}>Your Journey</NavLink></NavItem>
     </NavList>
   </Nav>
 );
