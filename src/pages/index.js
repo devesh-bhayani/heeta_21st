@@ -17,17 +17,6 @@ function ScrollToTopOnLoad() {
 export default function Home() {
   const [activeSection, setActiveSection] = useState('landing');
 
-  useEffect(() => {
-    // Ensure font and styles are loaded on every render/refresh
-    const dancingScript = document.createElement('link');
-    dancingScript.rel = 'stylesheet';
-    dancingScript.href = 'https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@400;700&display=swap';
-    document.head.appendChild(dancingScript);
-    return () => {
-      document.head.removeChild(dancingScript);
-    };
-  }, []);
-
   // Scroll handler for navbar links
   function handleNavClick(sectionId) {
     setActiveSection(sectionId);
