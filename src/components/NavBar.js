@@ -33,7 +33,8 @@ const NavItem = styled.li`
   list-style: none;
 `;
 
-const NavLink = styled.button`
+// Fix: Use styled.a for NavLink to ensure all CSS applies, but use role="button" and tabIndex for accessibility
+const NavLink = styled.a`
   font-family: 'Dancing Script', cursive;
   font-size: 2.2rem;
   color: #ff69b4;
@@ -55,7 +56,8 @@ const NavLink = styled.button`
   border-width: 2.5px;
   border-color: #ff69b4;
   appearance: none;
-  &:hover, &:focus {
+  display: inline-block;
+  &:hover, &:focus, &[aria-current="true"] {
     background: linear-gradient(90deg, #ffb6df 0%, #ff69b4 100%);
     color: #fff;
     box-shadow: 0 4px 28px 0 #ff69b4a6, 0 0 0 4px #ffd6eb99;
@@ -71,10 +73,12 @@ const NavLink = styled.button`
     opacity: 0.7;
     pointer-events: none;
     font-size: 1.7rem;
-    display: none;
-  }
-  &:hover::after, &:focus::after {
     display: inline-block;
+    transition: opacity 0.18s;
+    opacity: 0.1;
+  }
+  &:hover::after, &:focus::after, &[aria-current="true"]::after {
+    opacity: 1;
   }
 `;
 
@@ -94,14 +98,14 @@ const Heart = styled.span`
   }
 `;
 
-const NavBar = ({ onNavClick }) => (
+const NavBar = ({ onNavClick, activeSection }) => (
   <Nav>
     <Heart>♥</Heart>
     <NavList>
-      <NavItem><NavLink onClick={() => onNavClick('landing')}>Welcome</NavLink></NavItem>
-      <NavItem><NavLink onClick={() => onNavClick('love-letter')}>Letter from Me</NavLink></NavItem>
-      <NavItem><NavLink onClick={() => onNavClick('gallery')}>Photo Gallery</NavLink></NavItem>
-      <NavItem><NavLink onClick={() => onNavClick('timeline')}>Your Journey</NavLink></NavItem>
+      <NavItem><NavLink href="#" role="button" tabIndex={0} aria-current={activeSection==='landing'} onClick={e => { e.preventDefault(); onNavClick('landing'); }}>Welcome</NavLink></NavItem>
+      <NavItem><NavLink href="#" role="button" tabIndex={0} aria-current={activeSection==='love-letter'} onClick={e => { e.preventDefault(); onNavClick('love-letter'); }}>Letter from Me</NavLink></NavItem>
+      <NavItem><NavLink href="#" role="button" tabIndex={0} aria-current={activeSection==='gallery'} onClick={e => { e.preventDefault(); onNavClick('gallery'); }}>Photo Gallery</NavLink></NavItem>
+      <NavItem><NavLink href="#" role="button" tabIndex={0} aria-current={activeSection==='timeline'} onClick={e => { e.preventDefault(); onNavClick('timeline'); }}>Your Journey</NavLink></NavItem>
     </NavList>
   </Nav>
 );

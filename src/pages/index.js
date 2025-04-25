@@ -29,7 +29,7 @@ export default function Home() {
   return (
     <>
       <ScrollToTopOnLoad />
-      <NavBar onNavClick={handleNavClick} />
+      <NavBar onNavClick={handleNavClick} activeSection={activeSection} />
       <div id="main-scroll" style={{
         width: '100vw',
         minHeight: '100vh',
