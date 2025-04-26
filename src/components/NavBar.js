@@ -60,25 +60,16 @@ const NavLink = styled.a`
   &:hover, &:focus, &[aria-current="true"] {
     background: linear-gradient(90deg, #ffb6df 0%, #ff69b4 100%);
     color: #fff;
-    box-shadow: 0 4px 28px 0 #ff69b4a6, 0 0 0 4px #ffd6eb99;
+    box-shadow: 0 8px 36px #ffd6eb66;
     transform: scale(1.09) rotate(-2deg);
-    border-color: #ff69b4;
+    outline: none;
   }
-  &::after {
-    content: '💖';
-    position: absolute;
-    right: -1.5rem;
-    top: 50%;
-    transform: translateY(-50%) scale(1.1);
-    opacity: 0.7;
-    pointer-events: none;
-    font-size: 1.7rem;
-    display: inline-block;
-    transition: opacity 0.18s;
-    opacity: 0.1;
-  }
-  &:hover::after, &:focus::after, &[aria-current="true"]::after {
-    opacity: 1;
+  &.active {
+    background: linear-gradient(90deg, #ff69b4 0%, #ffb6df 100%);
+    color: #fff;
+    box-shadow: 0 8px 36px #ffd6eb99;
+    transform: scale(1.09) rotate(-2deg);
+    outline: none;
   }
 `;
 

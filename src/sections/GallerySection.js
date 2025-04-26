@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import { galleryImages } from './galleryImages';
+import Lightbox from '../components/Lightbox';
 
 /**
  * Gallery Section Container
@@ -11,10 +12,7 @@ import { galleryImages } from './galleryImages';
  */
 const Section = styled.section`
   width: 100vw;
-  height: 100vh;
-  min-height: 100vh;
-  max-height: 100vh;
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -84,10 +82,11 @@ const GalleryImage = styled.img`
   border-radius: 10px;
   box-shadow: 0 1px 6px rgba(255, 105, 180, 0.07);
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.23s cubic-bezier(.23,1.07,.62,1.01), box-shadow 0.22s;
   &:hover {
-    transform: scale(1.06);
-    box-shadow: 0 6px 24px rgba(255, 105, 180, 0.13);
+    transform: scale(1.15) rotate(-2deg);
+    box-shadow: 0 12px 40px rgba(255, 105, 180, 0.18);
+    z-index: 2;
   }
 `;
 
@@ -109,14 +108,34 @@ const images = galleryImages.map(name => `/gallery/${name}`);
  * A section component that displays a photo gallery.
  */
 function GallerySection() {
+  const [lightboxIdx, setLightboxIdx] = useState(null);
+  const openLightbox = idx => setLightboxIdx(idx);
+  const closeLightbox = () => setLightboxIdx(null);
+  const showPrev = () => setLightboxIdx(idx => (idx === 0 ? images.length - 1 : idx - 1));
+  const showNext = () => setLightboxIdx(idx => (idx === images.length - 1 ? 0 : idx + 1));
+
   return (
     <Section id="gallery">
       <Title>Photo Gallery</Title>
       <GalleryGrid>
         {images.map((img, idx) => (
-          <GalleryImage key={idx} src={img} alt={`Photo ${idx + 1}`} />
+          <GalleryImage
+            key={idx}
+            src={img}
+            alt={`Photo ${idx + 1}`}
+            onClick={() => openLightbox(idx)}
+          />
         ))}
       </GalleryGrid>
+      {lightboxIdx !== null && (
+        <Lightbox
+          images={images}
+          index={lightboxIdx}
+          onClose={closeLightbox}
+          onPrev={showPrev}
+          onNext={showNext}
+        />
+      )}
     </Section>
   );
 }

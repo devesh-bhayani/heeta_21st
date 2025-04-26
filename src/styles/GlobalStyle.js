@@ -42,6 +42,11 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     list-style: none;
   }
+  nav, nav * {
+    all: unset;
+    box-sizing: border-box;
+    font-family: 'Dancing Script', cursive;
+  }
   nav ul {
     display: flex !important;
     flex-direction: row !important;
