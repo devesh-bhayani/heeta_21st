@@ -42,15 +42,15 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     list-style: none;
   }
+  /* Remove or neutralize navbar overrides to allow component styles to persist */
   nav, nav * {
-    all: unset;
     box-sizing: border-box;
     font-family: 'Dancing Script', cursive;
   }
   nav ul {
-    display: flex !important;
-    flex-direction: row !important;
-    gap: 3.2rem !important;
+    display: flex;
+    flex-direction: row;
+    gap: 3.2rem;
     align-items: center;
     justify-content: center;
   }

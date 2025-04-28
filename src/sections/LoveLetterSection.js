@@ -197,6 +197,11 @@ const DecorativeBottom = styled.div`
 const Title = styled.h2`
   text-align: center;
   margin-bottom: 1.5rem;
+  font-family: 'Dancing Script', cursive;
+  font-size: 4.2rem;
+  color: #e94e89;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 16px #fffbe8, 0 1px 0 #ffd6eb;
 `;
 
 // --- Letter Text ---
